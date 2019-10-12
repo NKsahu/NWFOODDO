@@ -1,0 +1,92 @@
+﻿
+@using FOODDO.Models;
+@{  Layout = null;}
+@{ 
+    List<Food> foodlist = Food.List;
+    List<OrderItem> orderItemslist = OrderItem.List;
+    if (Request.QueryString["OrderId"]!= null && Request.QueryString["OrderId"]!="0")
+    {
+        orderItemslist = orderItemslist.FindAll(x => x.OID == System.Int32.Parse(Request.QueryString["OrderId"]));
+
+    }
+
+    if (Request.QueryString["status"]!=null&& Request.QueryString["status"]=="1")//today order
+    {
+        orderItemslist = orderItemslist.FindAll(x => x.OrderDate.Date == DateTime.Now.Date);
+    }
+    else if(Request.QueryString["status"] != null && Request.QueryString["status"] == "2")//yesterday
+    {
+        orderItemslist = orderItemslist.FindAll(x => x.OrderDate.Date == DateTime.Now.Date.AddDays(-1));
+    }
+}
+<div class="card">
+    <div class="card-header"> Customer Order Details  </div>
+    <div class="card-body">
+        <table class="table table-hover table-bordered text-center" id="TBLID1">
+            <thead>
+                <tr>
+                    <th>Food Name</th>
+                    <th>Total Items</th>
+                    <th>Qty</th>
+                    <th>Mess Name</th>
+                    <th>Tifin Rack No</th>
+                    <th>Tifin No</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in orderItemslist)
+                {
+                    <tr>
+                        <td>
+                            @{ 
+                                Food objFood = foodlist.Find(x => x.FID == item.FID);
+                            }
+                            @objFood.Food_Name
+                        </td>
+                        <td>@Html.DisplayFor(model=> item.Count)</td>
+                        <td>
+                           @Html.DisplayFor(model=>item.Qty)
+                        </td>
+                        <td>
+                           @{ 
+                               string MessName = " ";
+                               Mess objMess = Mess.List.Find(x => x.MID == item.MessID);
+                               if (objMess != null)
+                               {
+                                   MessName = objMess.Mess_Name;
+                               }
+                           }
+                            @MessName
+                        </td>
+                        <td>@item.TifinRackIds</td>
+                        <td>@item.TifinID.ToString()</td>
+                       
+                    </tr>
+                               }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function LoadDataTable1() {
+        $("#TBLID1").DataTable({
+            "scrollY": "300px",
+            "scrollCollapse": true,
+            "paging": false,
+            "sScrollX": "100%",
+            "bScrollCollapse": true,
+            "dom": 'Bfrtip',
+            "buttons": ['excel', 'pdf', 'print']
+        });
+    }
+
+    $(document).ready(function () {
+
+        setTimeout(function () { LoadDataTable1(); }, 500);
+    });
+    function Verify(OrderItemId) {
+
+
+    }
+</script>

@@ -1,0 +1,141 @@
+﻿@{Layout = null;}
+@using FOODDO.Models;
+@{Layout = null;}
+
+<div class="card">
+    <div class="card-header">
+        Ledger Filter
+    </div>
+    <div class="card-body">
+        @using (Ajax.BeginForm("ShortInfo", "Ledger", null, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "FiltrResult", LoadingElementId = "waiting" }))
+        {
+        <div class="row">
+            <div class="col-md-3">
+
+                @{ 
+                    List<SelectListItem> LedgerType = new List<SelectListItem>()
+                    {
+                       
+                        new SelectListItem{Text="CUSTOMER",Value="CUSTOMER"},
+                        new SelectListItem{ Text="MESS",Value="MESS"},
+                        new SelectListItem{Text="HUBOWNER",Value="HUBOWNER"},
+                        new SelectListItem {Text="DELIVERY-BOY",Value="DELIVERY-BOY"}
+                        
+                    };
+
+                }
+                @Html.Label("Ledger Type", new { @class = "control-label" })
+                @Html.DropDownList("Type", LedgerType, new { @class = "form-control", placeholder = "Select Ledger" })
+            </div>
+            <div class="col-md-3">
+                @{
+                    List<SelectListItem> LedgerList = new List<SelectListItem>()
+                        {
+                            new SelectListItem {Text="Select",Value="0"}
+
+                        };
+
+                }
+                @Html.Label("Ledger Name", new { @class = "control-label" })
+                @Html.DropDownList("LID",LedgerList, new { @class = "form-control", placeholder = "Select Ledger" })
+            </div>
+            <div class="col-md-2 ShowHide">
+                @Html.Label("FROM DATE", new { @class = "control-label" })
+                @Html.TextBox("FD", DateTime.Now.AddDays(-30).ToString("dd-MM-yyyy"), new { @class = "form-control DateField" })
+            </div>
+            <div class="col-md-2 ShowHide">
+                @Html.Label("TO DATE", new { @class = "control-label" })
+                @Html.TextBox("TD", DateTime.Now.ToString("dd-MM-yyyy"), new { @class = "form-control DateField" })
+            </div>
+
+            <div class="col-md-1">
+                @Html.Label("Search", new { @class = "control-label text-white" })
+                <button class="btn btn-secondary" type="submit"> Search</button>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+<div class="row" id="FiltrResult">
+
+</div>
+<script>
+    $("#ByDate").on("change", function () {
+        var state = $(this).val();
+        if (state == "1")
+            $(".ShowHide").removeClass("d-none");
+        else
+            $(".ShowHide").addClass("d-none");
+
+    });
+
+
+    function LedgerSearch() {
+        var Type = $("#Type").val();
+        var URL = "";
+        if (Type == "CUSTOMER") {
+            URL = "/Customer/LiveSearch";
+        }
+        else if (Type == "MESS") {
+            URL = "/Mess/LiveSearch";
+        }
+        else if (Type == "HUBOWNER") {
+            URL = "/Route/LiveSearch";
+        }
+        else {
+            URL = "/DeliveryBoy/LiveSearch";
+
+        }
+        console.log("URL=" + URL);
+        $("#LID").select2({
+            ajax: {
+                url: URL,
+                dataType: 'json',
+                delay: 200,
+                data: function (params) {
+                    return {
+                        pageSize: 20,
+                        pageNum: params.page || 1,
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Results,
+                        pagination: {
+                            more: (params.page * 20) < data.Total
+                        }
+                    };
+                },
+                cache: true
+            },
+            //escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 0,
+            allowClear: true,
+            placeholder: "Select Ledger ",
+            tags: false,
+            tokenSeparators: [','],
+            dropdownAutoWidth: true
+            //templateResult: formatRepo,
+            //templateSelection: formatRepoSelection
+        }).on("select2:focus", function (e) {
+            $(this).select2('open');
+        });
+        $("#LID").select2('open');
+    }
+    $("#LID").click(function () {
+        LedgerSearch();
+    });
+    $("#Type").change(function () {
+        LedgerSearch();
+    });
+</script>
+
+
+
+
+
+
+
+

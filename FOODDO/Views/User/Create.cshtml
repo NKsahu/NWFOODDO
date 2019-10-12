@@ -1,0 +1,74 @@
+﻿@model FOODDO.Models.Users
+@{ Layout = null;}
+@using FOODDO.Models;
+<div class="card h-100">
+    <div class="card-header bg-secondary" style="color:#ffdb00"><i class="fa fa-edit"></i> Users</div>
+    <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    @using (Ajax.BeginForm("Post", "User", new { UID = Model.UID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnBegin="CreateUser" },new { enctype = "multipart/form-data" }))
+                    {
+                    <div class="row">
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.User_Name, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.User_Name, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { type = "password", @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-2">
+                            @Html.Label("User Type", htmlAttributes: new { @class = "control-label " })
+                            @{
+                                List<SelectListItem> SLUserType = new List<SelectListItem>()
+                                                {
+                                                     new SelectListItem { Text = "ADMIN", Value = "ADMIN" },
+                                                     new SelectListItem { Text = "MESS-ADMIN", Value = "MESS-ADMIN" },
+                                                     new SelectListItem { Text = "FOOD-COLLECTION", Value = "FOOD-COLLECTION" },
+                                                     new SelectListItem { Text = "FOOD-PACKING", Value = "FOOD-PACKING" }
+                                                };
+                            }
+                            @Html.DropDownListFor(model => model.User_Type, SLUserType, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Mess Name", htmlAttributes: new { @class = "control-label " })
+                            @Html.DropDownListFor(model => model.MESSID, (IEnumerable<SelectListItem>) ViewBag.Mess, new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-sm-1">
+                            @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+
+                            <button type="submit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        
+    </div>
+</div>
+<script>
+    $("#User_Type").change(function () {
+        
+        OnUserTypeChange();
+    });
+    OnUserTypeChange();
+    function OnUserTypeChange() {
+        var userType = $("#User_Type").val();
+
+        if (userType != "MESS-ADMIN") {
+            $("#MESSID").parent('div').hide();
+            $("#MESSID").val('0');
+        }
+        else {
+            $("#MESSID").parent('div').show();
+        }
+    }
+
+
+
+
+
+
+</script>

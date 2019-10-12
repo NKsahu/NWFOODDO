@@ -1,0 +1,374 @@
+﻿@using FOODDO.Models;
+@{ Layout = null;}
+
+@{
+
+    switch (Request.QueryString["Status"])
+    {
+        //case 1 for show filters only
+        case "1":
+
+            <div class="card">
+                <div class="card-header">Order Collection </div>
+                <div class="card-body">
+                    <div class="container">
+                        @*@using (Ajax.BeginForm("index", "OrderItemCollection", new { Status = "2" }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "OrderList", LoadingElementId = "waiting", OnSuccess = "OnSuccess", OnFailure = "$('#waiting').hide();" }))*@
+                        
+                        <div class="row">
+                            <div class="col-md-2">
+                                @Html.Label("Order Type")
+                                @{
+                                    List<SelectListItem> selecttype = new List<SelectListItem>()
+                                                                                                                    {
+                                                                                                                        new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                                                                                        new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                                                                                        new SelectListItem{Text="Breakfast",Value="Breakfast"},
+                                                                                                                    };
+                                }
+                                @Html.DropDownList("Ordertype", selecttype, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Mess Name")
+                                @{
+                                    List<SelectListItem> MessSelectList = new List<SelectListItem>()
+                                                                    {
+                                                                        new SelectListItem{ Text="Select" ,Value="0"}
+                                                                    };
+                                }
+                                @Html.DropDownList("MessId", MessSelectList, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label for="Food_name">Food Name</label>
+                                @{
+                                    List<SelectListItem> FoodList = new List<SelectListItem>()
+                                                                                    {
+                                                                                        new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                    };
+                                }
+                                @Html.DropDownList("FoodId", FoodList, new { @class = "form-control" })
+
+                            </div>
+
+                            <div class="col-sm-2">
+
+                                <button id="Search" class="btn btn-secondary" style="margin-top:15%"><i class="fa fa-search"></i> Search</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Order Item Collection </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col" id="OrderList">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $("#Search").click(function () {
+                    $("#waiting").show();
+                    var MessId = $("#MessId").val();
+                    var FoodId = $("#FoodId").val();
+                    var Ordertype = $("#Ordertype").val();
+                    $.ajax({
+                        type: 'GET',
+                        data: { MessId: MessId, FoodId: FoodId, Ordertype: Ordertype},
+                        url: "/OrderItemCollection/Index?Status=2",
+                        success: function (data) {
+                            $("#OrderList").html(data);
+                            $("#waiting").hide();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                            $("#waiting").hide();
+                        }
+                    });
+
+                });
+                function MessSearch() {
+                    $("#MessId").select2({
+                        ajax: {
+                            url: "/Mess/LiveSearch",
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return {
+                                    pageSize: 20,
+                                    pageNum: params.page || 1,
+                                    searchTerm: params.term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data.Results,
+                                    pagination: {
+                                        more: (params.page * 20) < data.Total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        //escapeMarkup: function (markup) { return markup; },
+                        minimumInputLength: 0,
+                        allowClear: true,
+                        placeholder: "Select Mess Name",
+                        tags: false,
+                        tokenSeparators: [','],
+                        dropdownAutoWidth: true
+                        //templateResult: formatRepo,
+                        //templateSelection: formatRepoSelection
+                    }).on("select2:focus", function (e) {
+                        $(this).select2('open');
+                    });
+                    $("#MessId").select2('open');
+                }
+                $("#MessId").click(function () {
+                    MessSearch();
+                });
+                function FoodSearch() {
+                    var MessId = $("#MessId").val();
+                    $("#FoodId").select2({
+                        ajax: {
+                            url: "/Food/LiveSearch?MessId=" + MessId,
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return {
+                                    pageSize: 20,
+                                    pageNum: params.page || 1,
+                                    searchTerm: params.term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data.Results,
+                                    pagination: {
+                                        more: (params.page * 20) < data.Total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        //escapeMarkup: function (markup) { return markup; },
+                        minimumInputLength: 0,
+                        allowClear: true,
+                        placeholder: "Select Food Name",
+                        tags: false,
+                        tokenSeparators: [','],
+                        dropdownAutoWidth: true
+                        //templateResult: formatRepo,
+                        //templateSelection: formatRepoSelection
+                    }).on("select2:focus", function (e) {
+                        $(this).select2('open');
+                    });
+                    $("#FoodId").select2('open');
+                }
+                $("#FoodId").click(function () {
+                    FoodSearch();
+                });
+                $("#MessId").change(function () {
+                   // $('#FooId').select2('destroy');
+                    if ($('#FooId').data('select2')) {
+                        
+                        $('#FooId').html('<option value="0">Select</option>');
+                        console.log("Select2 destroyed");
+                    }
+                    console.log("Select2 destroyed");
+                    FoodSearch();
+                });
+            </script>
+
+                                        break;
+
+                                    case "2":
+                                        int MessId = int.Parse(Request.QueryString["MessId"]);
+                                        int FoodId = int.Parse(Request.QueryString["FoodId"]);
+                                        string OrderType = Request.QueryString["Ordertype"];
+                                        List<Orders> ListOfOrder = Orders.List.FindAll(x => x.Type == OrderType && x.MessIDs.Contains(MessId.ToString()));
+                                        HashSet<Int64> OIDHash = new HashSet<Int64>(ListOfOrder.Select(x => x.OID).ToArray());
+                                        List<OrderItem> orderItemList = OrderItem.List.FindAll(x =>x.MessID==MessId && x.FID==FoodId);// &&// x.OrderDate.Date >= DateTime.Now.AddDays(-3).Date);
+                                        orderItemList = orderItemList.FindAll(x => OIDHash.Contains(x.OID));
+                        <table class="table table-bordered table-hover" id="TBLID">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        S.NO
+                                    </th>
+                                    <th>
+                                        ORDER NO
+                                    </th>
+                                    
+                                    <th>
+                                        Total Items
+                                    </th>
+                                    <th>
+                                        ITEM NAME
+                                    </th>
+                                    
+                                    <th>
+                                        ELEMENT  CODE
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ 
+                                    int SerialNo = 1;
+                                }
+                                @foreach (var item in orderItemList)
+                                {
+
+                                    <tr id="TR@(item.OIID)">
+                                        <td class="text-center SN">
+                                            @SerialNo.ToString()
+
+                                        </td>
+                                        <td>
+                                            @item.OID.ToString()
+                                        </td>
+                                        
+                                        <td class="TotalItems">@item.Count.ToString()</td>
+                                        <td>
+                                            @{ SerialNo++;
+                                                string FoodName = "";
+                                                Food ObjFood = Food.List.Find(x => x.FID == item.FID);
+                                                if (ObjFood != null) { FoodName = ObjFood.Food_Name; }
+
+                                            }
+                                            @FoodName
+                                        </td>
+                                        <td class="barcodeid">
+                                            @{
+                                                if (item.Status == 2)
+                                                {
+                                                    string NumberOfTifinRackIds = item.TifinRackIds;
+                                                    if (item.TifinRackIds.Contains(","))
+                                                    {
+                                                        string[] TifinRackIds = item.TifinRackIds.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                                        NumberOfTifinRackIds = string.Join(",", TifinRackIds);
+
+                                                    }
+                                                    <p style="text-align:center">@NumberOfTifinRackIds</p>
+                                                }
+                                                else
+                                                {
+                                                    <input id="EI@(item.OIID)" OIID="@(item.OIID)" name="ElementCode" style="width:100%" type="text" placeholder=" Scan Element BarCode" value="">
+
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @{ 
+                                                string Design = "";
+                                                if (item.Status != 2)
+                                                {
+                                                    Design = "<a id="+item.OIID+ "  tabindex='-1' class='btn btn-info btn-sm' onclick='CollectItem(" + item.OIID+")' >Collect</a>";
+                                                }
+                                                else
+                                                {
+                                                    Design = "Collected";
+                                                }
+                                            }
+                                            @Html.Raw(Design)
+
+                                        </td>
+                                        
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    <script>
+                        function CollectItem(OrderItemId) {
+                           
+                            var ElementCode = $("#EI" + OrderItemId).val();
+                            if (ElementCode === undefined || ElementCode === null || ElementCode === "" || ElementCode == "0") {
+                                //alert("Please Select Element Code First");
+                                responsiveVoice.speak("Please Select Element Code First");
+                                return;
+                            }
+                            $("#waiting").show();
+                            $.ajax({
+                                type: 'GET',
+                                data: { OrderItemId: OrderItemId, ElementCode: ElementCode },
+                                url: "/OrderItemCollection/PostCollectionItem",
+                                success: function (data) {
+                                    //var CurrentiItemCount = parseInt(data);
+                                    var ResultAsNumberOfRacks = data.split(',');
+                                    var CurrentiItemCount = ResultAsNumberOfRacks.length;
+                                    var CurrentItem = parseInt($("#EI" + OrderItemId).parent('td').parent('tr').find('.TotalItems').text());
+                                    //alert("ServerResponse" + CurrentiItemCount);
+                                   // alert("TD Current Item" + CurrentItem);
+                                    if (CurrentiItemCount > CurrentItem) {
+                                        $("#"+OrderItemId).replaceWith("<p>Collected</p>");
+                                        $("#EI" + OrderItemId).parent('td').parent('tr').next('tr').find('.barcodeid').find('input').focus();
+                                        if (CurrentiItemCount == 2) {
+                                            $("#EI"+OrderItemId).replaceWith("<p>" + ElementCode + "</p>");
+                                        } else {
+                                            $("#EI"+OrderItemId).replaceWith("<p>" + ResultAsNumberOfRacks + "</p>");
+                                        }
+                                        
+                                    }
+                                    else {
+                                        $("#EI" + OrderItemId).val('');
+                                        $("#EI"+OrderItemId).attr("placeholder", "Scan New Element If Exist For Perticular Order item");
+                                    }
+                                    $("#waiting").hide();
+                                },
+                                error: function (jqXhr, textStatus, errorMessage) { // error callback
+                                   // responsiveVoice.setDefaultVoice("Hindi Female");
+                                    JObj = JSON.parse(jqXhr.responseText);
+                                    responsiveVoice.speak(JObj.msg);
+                                    $("#EI" + OrderItemId).val('');
+                                    $("#waiting").hide();
+                                    //Onfail(JObj.msg);
+                                },
+                                complete: function () {
+                                    
+                                }
+                            });
+
+
+                        }
+                        $('input').keypress(function (e) {
+                            if (e.which == 13) {
+                                //alert(this.id);
+                                var OIID = $(this).attr('OIID');
+                                //e.preventDefault();
+                                CollectItem(OIID);
+                               
+                              
+                            }
+                        });
+
+                    </script>
+
+
+            break;
+
+        default:
+            break;
+
+    }
+
+
+
+
+}
+

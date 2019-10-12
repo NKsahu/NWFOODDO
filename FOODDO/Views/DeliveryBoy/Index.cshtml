@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FOODDO.Models.DeliveryBoy>
+@{ Layout = null;}
+<div class="card">
+    <div class="card-header">
+        Delivery Boys
+        <span class="float-right">
+            <a href="/DeliveryBoy/Create?DBID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+        </span>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover" id="TBLID">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Mobile)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Password)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mobile)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Password)
+                    </td>
+                    
+                    <td>
+                        <a href="/DeliveryBoy/Create?DBID=@item.DBID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

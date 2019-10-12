@@ -1,0 +1,57 @@
+@model FOODDO.Models.TifinMaster
+@{ Layout = null;}
+<div class="card h-100">
+    <div class="card-header bg-secondary" style="color:#ffdb00"><i class="fa fa-edit"></i> TIFIN</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @using (Ajax.BeginForm("CreateSave", "Tifin",  new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnBegin = "CreateTifin" }, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.TifinType, htmlAttributes: new { @class = "control-label " })
+                            @{
+                                List<SelectListItem> SLTifinType = new List<SelectListItem>()
+                                                                                {
+                                                                                     new SelectListItem { Text = "1 BOX", Value = "1" },
+                                                                                     new SelectListItem { Text = "2 BOX", Value = "2" },
+                                                                                     new SelectListItem { Text = "3 BOX", Value = "3" },
+                                                                                     new SelectListItem { Text = "4 BOX", Value = "4" },
+                                                                                     new SelectListItem { Text = "5 BOX", Value = "5" },
+                                                                                     new SelectListItem { Text = "6 BOX", Value = "6" },
+                                                                                };
+                            }
+                            @Html.DropDownListFor(model => model.TifinType, SLTifinType,  new {  @class = "form-control", required = "required" } )
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.TifinColor, htmlAttributes: new {  @class = "control-label " })
+                            @{
+                                List<SelectListItem> SLTifinCOlor = new List<SelectListItem>()
+                                                                                {
+                                                                                     new SelectListItem { Text = "NONE", Value = "NONE" },
+                                                                                     new SelectListItem { Text = "WHITE", Value = "WHITE" },
+                                                                                     new SelectListItem { Text = "GREEN", Value = "GREEN" },
+                                                                                     new SelectListItem { Text = "YELLOW", Value = "YELLOW" },
+                                                                                     new SelectListItem { Text = "RED", Value = "RED" },
+                                                                                     new SelectListItem { Text = "BLUE", Value = "BLUE" },
+                                                                                };
+                            }
+                            @Html.DropDownListFor(model => model.TifinColor,SLTifinCOlor, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model=>model.NumberOfTifin, htmlAttributes: new { @class = "control-label " })
+                            @Html.TextBoxFor(model=>model.NumberOfTifin , new { @class = "form-control OnlyNum ",  required = "required" })
+
+                        </div>
+                        <div class="col-sm-1">
+                            @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+
+                            <button type="submit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

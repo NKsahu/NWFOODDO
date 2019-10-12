@@ -1,0 +1,109 @@
+﻿@model FOODDO.Models.Routes
+
+@{
+    Layout = null;
+}
+
+<div class="card h-100">
+    <div class="card-header bg-secondary" style="color:#ffdb00"><i class="fa fa-edit"></i> HUB </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @using (Ajax.BeginForm("CreateRoutePost", "Route", new { UID = Model.HubID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnBegin = "CreateUser" }, new { enctype = "multipart/form-data" }))
+                {
+
+                    <div class="row">
+                        @Html.HiddenFor(model => model.HubID, new { htmlAttributes = new { @class = "", } })
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.HubName, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.HubName, new { htmlAttributes = new { @class = "form-control GPlace", required = "required" } })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.HubCode, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.HubCode, new { htmlAttributes = new { @class = "form-control autodouble", required = "required" } })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.HubOwnerName, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.HubOwnerName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control OnlyNum" } })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.Mobile2, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.Mobile2, new { htmlAttributes = new { @class = "form-control OnlyNum" } })
+                        </div>
+                        @Html.HiddenFor(model => model.HubLatLng, new { htmlAttributes = new { @class = "",value="0" } })
+
+                        <div class="col-md-2">
+                            @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+
+                            <button type="submit" style="margin-top:10px" class="btn btn-secondary">Save</button>
+                        </div>
+
+                    </div>
+
+                }
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+<script >
+    //function initialize() {
+    //    console.log("iNITIALIZE");
+    //    var input = document.getElementById('HubName');
+    //    var autocomplete = new google.maps.places.Autocomplete(input);
+    //    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    //        //var place = autocomplete.getPlace();
+    //        //document.getElementById('city2').value = place.name;
+    //        document.getElementById('HubLatLng').value = place.geometry.location.lat() + "," + place.geometry.location.lng();
+    //        // document.getElementById('cityLng').value =
+
+    //    });
+    //}
+    //google.maps.event.addDomListener(window, 'load', initialize);
+    $(document).on("focusin", ".GPlace", function () {
+        var id = $(this).attr("id");
+        $("#" + id).css("z-index", "1000");
+        //console.log(id);
+        //new google.maps.places.SearchBox(document.getElementById(id));
+
+        var searchBox = new google.maps.places.SearchBox(document.getElementById(id));
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+            if (places.length === 0) {
+                return;
+            }
+            // For each place, get the icon, name and location.
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var lat = place.geometry.location.lat();
+                var lng = place.geometry.location.lng();
+                console.log("lat = " + lat + ",  lang =" + lng);
+                $("#HubLatLng").val(lat + "," + lng);
+
+
+                //console.log(place.geometry.location);
+            });
+        });
+
+    });
+
+
+</script>
+
+
+
+

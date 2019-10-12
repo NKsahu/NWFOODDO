@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOODDO | N-Work Technology</title>
+
+    <!-- CSS -->
+    <link rel="shortcut icon" type="image/png" href="~/Assets/FoodLogo.png">
+    <link href="~/Assets/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <!-- JS -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6EOAVbyXcsjpq0JkNNKAkCkPl650O4Z4&libraries=places"></script>
+    <script src="~/Assets/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="~/Assets/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+    <script src="~/Assets/AjaxForm/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Assets/Website.js"></script>
+    <script src="~/Assets/autonumeric.js"></script>
+
+    <!-- Select2 cdn(content deliver network)-->
+    <link href="~/Assets/Select2/css/select2.min.css" rel="stylesheet" />
+    <script src="~/Assets/Select2/js/select2.min.js"></script>
+
+    <!-- Bootstrap Date picker -->
+    <link href="~/Assets/Datepicker/datepicker.css" rel="stylesheet" />
+    <script src="~/Assets/Datepicker/datepicker.js"></script>
+    <link href="~/Assets/jQuery/animate.css" rel="stylesheet" />
+    <link href="~/Assets/Mystyle.css" rel="stylesheet" />
+
+    @*<link href='https://fonts.googleapis.com/css?family=Libre Barcode 39' rel='stylesheet'>*@
+    <!-- datatable -->
+    <link href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://www.datatables.net/download/build/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    @*<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
+    <!--responsive voice js-->
+
+    <script src="~/Assets/responsivevoice2.js"></script>
+</head>
+<body>
+    <!--Waiting Spinner-->
+    <div id="waiting" style="display:none;"><div id="pwaiting"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div></div>
+    <!--End Waiting Spinner-->
+    @RenderBody()
+
+    <!--Warning Model-->
+    <div class="modal fade bd-example-modal-sm pr-0" id="WarningModel" tabindex="-1" role="dialog" aria-labelledby="WarningModel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content border border-warning text-center">
+                <div class="modal-header pt-2 pb-2 bg-secondary " style="text-align:center !important;">
+                    <h5 class="modal-title w-100" style="color:#fffa08;"> <i class="fas fa-exclamation-triangle"></i> Warning</h5>
+                </div><div class="modal-body text-center"></div>
+            </div>
+        </div>
+    </div>
+    <!--End Warning Model-->
+    <!--popup modeal-->
+
+    <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-max  modal-xl" style="max-width:100% ;height:100%">
+            <div class="modal-content" style="height:100%">
+                <div class="modal-header" style="top:-15px;right:10px;position:absolute;z-index:10">
+                    <button type="button" style="font-size:50px;" class="close" aria-hidden="true" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body " data-height="100%" style="padding:0px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-max  modal-xl" style="max-width:100% ;height:100%">
+            <div class="modal-content" style="height:100%">
+                <div class="modal-header" style="top:-15px;right:10px;position:absolute;z-index:10">
+                    <button type="button" style="font-size:50px;" class="close" aria-hidden="true" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body " data-height="100%" style="padding:0px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--pop up modal en-->
+</body>
+</html>
+<script>
+    $("body").on('DOMSubtreeModified', "#DynamicData", function () {
+        //=======Date Picker ============
+        $(".DateField").datepicker();
+        //======= Data Table ============
+        if (!$.fn.DataTable.isDataTable('#TBLID')) {
+            LoadDataTable();
+        }
+        //=========== End Datatable ============       
+    });
+    
+    $("body").on('DOMSubtreeModified', "#DynamicData", function () {
+        //=======Date Picker ============
+        $(".DateField").datepicker();
+        //========== Only Char =============
+        $(".OnlyChar").keypress(function (e) {
+            var regex = new RegExp("[a-zA-Z ]");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            e.preventDefault();
+            return false;
+        });
+        $(".OnlyNum").keypress(function (e) {
+            var regex = new RegExp("[0-9]");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            e.preventDefault();
+            return false;
+        });
+        //========= End Only Char ==============    
+
+        $('.auto').autoNumeric('init', {
+            vMax: '100000000000000000000', vMin: '-100000000000000000000', aSep: ''
+        });
+
+        $('.autodouble').each(function () {
+                $(this).autoNumeric('init', {
+                    vMax: '100000000000000000000.00', vMin: '-100000000000000000000.00', aSep: ''
+                });
+            
+        });
+
+
+    });      
+
+    //============= Disable Back button =================
+    function preventBack() {
+        window.history.forward();
+    }
+    window.onunload = function () {
+        null;
+    };
+    setTimeout("preventBack()", 0);
+    //============= End Disable Back button =============
+
+    //===cal datatable=====
+
+    function LoadDataTable() {
+     var table=   $("#TBLID").DataTable({
+
+            "scrollY": "300px",
+            "scrollCollapse": true,
+            "paging": false,
+            "sScrollX": "100%",
+            "bScrollCollapse": true,
+            "dom": 'Bfrtip',
+         "buttons": ['colvis','excel', 'pdf', { extend: 'print', title: 'Impression', exportOptions: { columns: ':visible', stripHtml:false } },]
+            
+        });
+        table.buttons.exportData({
+            stripHtml: true
+        });
+        
+    }
+
+
+</script>

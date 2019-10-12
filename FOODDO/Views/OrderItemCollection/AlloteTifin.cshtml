@@ -1,0 +1,137 @@
+﻿@using FOODDO.Models;
+@{ Layout = null;}
+
+@{
+
+    switch (Request.QueryString["Status"])
+    {
+        //case 1 for show filters only
+        case "1":
+
+            <div class="card">
+                <div class="card-header">Allote Tifin To Mess </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                @Html.Label("Select Mess To Allote")
+                                @{ 
+                                    List<SelectListItem> MessList = new List<SelectListItem>()
+                                    {
+                                        new SelectListItem {Text="Select",Value="0"}
+                                    };
+                                }
+                                @Html.DropDownList("MID", MessList, new { @class = "form-control", @placeholder = " Select Mess " })
+
+                            </div>
+                            <div class="col-md-4">
+                                @Html.Label("Scan Tifin Code")
+                                @Html.TextBox("Tifinid", null, new { @class = "form-control", @placeholder = "Please Scan Element Code First" })
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">STATUS</div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col" id="OrderList">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $("#Tifinid").keypress(function (e) {
+                    if (e.which == 13) {
+                        var TifinCode = $("#Tifinid").val();
+                        var MID = $("#MID").val();
+                        if (TifinCode == null || TifinCode == '0' || TifinCode == '') {
+                            return;
+                        }
+                        $("#waiting").show();
+                        $.ajax({
+                            type: 'GET',
+                            data: { TifinCode: TifinCode, MID: MID},
+                            url: "/OrderItemCollection/AlloteTifinToMess",
+                            success: function (data) {
+                                $("#OrderList").html(data);
+                                $("#waiting").hide();
+                                $("#Tifinid").val('');
+                                $("#Tifinid").focus();
+                                var Text = data.toString();
+                                //responsiveVoice.getResponsiveVoice('Hindi Female');
+                                responsiveVoice.setDefaultVoice("Hindi Female");
+                                responsiveVoice.speak(Text);
+
+                            },
+                            error: function (jqXhr, textStatus, errorMessage) { // error callback
+                                JObj = JSON.parse(jqXhr.responseText);
+                                //Onfail(JObj.msg);
+                                responsiveVoice.speak(JObj.msg);
+                                $("#waiting").hide();
+                            }
+                        });
+
+                    }
+                });
+                function MessSearch() {
+                    $("#MID").select2({
+                        ajax: {
+                            url: "/Mess/LiveSearch",
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return {
+                                    pageSize: 20,
+                                    pageNum: params.page || 1,
+                                    searchTerm: params.term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data.Results,
+                                    pagination: {
+                                        more: (params.page * 20) < data.Total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        //escapeMarkup: function (markup) { return markup; },
+                        minimumInputLength: 0,
+                        allowClear: true,
+                        placeholder: "Select Mess Name ",
+                        tags: false,
+                        tokenSeparators: [','],
+                        dropdownAutoWidth: true
+                        //templateResult: formatRepo,
+                        //templateSelection: formatRepoSelection
+                    }).on("select2:focus", function (e) {
+                        $(this).select2('open');
+                    });
+                    $("#MID").select2('open');
+                }
+                $("#MID").click(function () {
+                    MessSearch();
+                });
+                
+            </script>
+
+                break;
+
+            default:
+                break;
+        }
+
+    }  

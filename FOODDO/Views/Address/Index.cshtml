@@ -1,0 +1,43 @@
+﻿@{ Layout = null;}
+<div class="card">
+    <div class="card-header">Customer Address </div>
+    <div class="card-body">
+        <div class="container">
+            @using (Ajax.BeginForm("Filter", "Address", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "CustomerList", LoadingElementId = "waiting", OnSuccess = "OnSuccess" }))
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        @{
+                            List<SelectListItem> SLItem = new List<SelectListItem>();
+                            SLItem.Add(new SelectListItem { Text = "NAME", Value = "NAME" });
+                            SLItem.Add(new SelectListItem { Text = "CUSTOMER ID", Value = "CID" });
+                        }
+                        @Html.DropDownList("FilterBy", SLItem, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBox("Value", "", new { @class = "form-control", @placeholder = "Value" })
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-secondary"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Customer Address List </div>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col" id="CustomerList">
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<FOODDO.Models.TifinRackMaster>
+@using FOODDO.Models.COMMON;
+@{ Layout = null;}
+@{
+    if (Request.QueryString["PrintOnly"] != null && Request.QueryString["PrintOnly"] == "1")
+    {
+        <div class="card">
+            <div class="card-header">
+                TIFIN ELEMENTS PRINT
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <table class="table table-bordered table-hover" id="TBLID">
+                        <thead>
+                            <tr>
+                                
+                                <th>
+                                    Tifin Element BarCode
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @{
+                                            var barcode = new NetBarcode.Barcode(item.TifinRackId.ToString(), true);
+                                            //barcode.SaveImageFile("./CodeImage", ImageFormat.Png);
+                                        }
+                                        <img src="@barcode.GetBase64Image()" />
+                                    </td>
+                                    
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header">
+                TIFIN ELEMENTS
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <table class="table table-bordered table-hover" id="TBLID">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    Tifin Element Code
+                                </th>
+                                <th>
+                                    Tifin Element BarCode
+                                </th>
+                               
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        TE-@item.TifinRackId
+
+                                    </td>
+                                    <td>
+                                        @{
+                                            var barcode = new NetBarcode.Barcode(item.TifinRackId.ToString(), true);
+                                            //barcode.SaveImageFile("./CodeImage", ImageFormat.Png);
+                                        }
+                                        <img src="@barcode.GetBase64Image()" />
+                                    </td>
+                                    
+                                    <td>
+                                        @Html.DisplayFor(modelitem => item.TifinRackStatus)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+
+}
+
+

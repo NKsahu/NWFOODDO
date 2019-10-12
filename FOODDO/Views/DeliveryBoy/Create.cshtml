@@ -1,0 +1,30 @@
+﻿@model FOODDO.Models.DeliveryBoy
+@{Layout = null;}
+
+<div class="card">
+    <div class="card-header"> Delivery Boys </div>
+    <div class="card-body">
+        @using (Ajax.BeginForm("Create", "DeliveryBoy", new { DBID = Model.DBID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnSuccess = "OnSuccess" }))
+        {
+        <div class="row">
+            <div class="col-md-4">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label " })
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control OnlyChar", required = "required" } })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label " })
+                @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control OnlyNum", required = "required", maxlength="10"} })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label " })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+            </div>
+            <div class="col-md-1">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label text-white" })
+                <input type="submit" value="Save" class="btn btn-secondary" />
+            </div>
+        </div>
+        }
+    </div>
+</div>
+ 

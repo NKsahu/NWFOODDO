@@ -1,0 +1,117 @@
+﻿@model IEnumerable<FOODDO.Models.TifinMaster>
+@{ Layout = null;
+
+}
+@{ 
+    if (Request.QueryString["PrintOnly"] != null && Request.QueryString["PrintOnly"] == "1")
+    {
+<div class="card">
+    <div class="card-header">
+        TIFIN MASTER PRINT
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th>
+                            Tifin BarCode
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                    var barcode = new NetBarcode.Barcode(item.TifinID.ToString(), true);
+                                }
+                                <img src="@barcode.GetBase64Image()" />
+                            </td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    }
+    else
+    {
+<div class="card">
+    <div class="card-header">
+        TIFIN MASTER
+        <span class="float-right">
+            <span class="float-right">
+                <a href="/Tifin/Create" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Tifin Code
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TifinType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TifinColor)
+                        </th>
+                        <th>
+                            Tifin BarCode
+                        </th>
+                        <th>
+                            Tifin At Place
+                        </th>
+                        <th>Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                TF-@item.TifinID
+
+                            </td>
+                            <td>
+                                @{
+                                    string TifinType = item.TifinType + " BOX";
+                                }
+                                @TifinType
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TifinColor)
+                            </td>
+                            <td>
+                                @{
+                                    var barcode = new NetBarcode.Barcode(item.TifinID.ToString(), true);
+
+                                    //barcode.SaveImageFile("./CodeImage", ImageFormat.Png);
+                                }
+                                <img src="@barcode.GetBase64Image()" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem=>item.TifinAtLocation)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.TifinStatus)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    }
+}
+
+

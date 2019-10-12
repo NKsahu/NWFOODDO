@@ -1,0 +1,181 @@
+﻿@model IEnumerable<FOODDO.Models.Orders>
+@using FOODDO.Models;
+@{ Layout = null;}
+@{
+    switch (Request.QueryString["Status"])
+    {
+        //case 1 for show filters only
+        case "1":
+
+            <div class="card">
+                <div class="card-header">  Filter </div>
+                <div class="card-body">
+                    <div class="container">
+                        @*@using (Ajax.BeginForm("index", "OrderItemCollection", new { Status = "2" }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "OrderList", LoadingElementId = "waiting", OnSuccess = "OnSuccess", OnFailure = "$('#waiting').hide();" }))*@
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.Label("Customer Name")
+                                @{
+                                   
+                                        List<SelectListItem> CustomerSelectList = new List<SelectListItem>()
+                                                                                            {
+                                                                                                new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                            };
+                                    
+                                }
+                                @Html.DropDownList("CID", CustomerSelectList, new { @class = "form-control" })
+                            </div>
+                               
+                            <div class="col-md-2">
+                                @Html.Label("Mess Name")
+                                @{
+                                   
+                                        List<SelectListItem> MessSelectList = new List<SelectListItem>()
+                                                                                                            {
+                                                                                                                new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                                            };
+                                    
+                                }
+                                @Html.DropDownList("MID", MessSelectList, new { @class = "form-control" })
+                            </div>
+                                <div class="col-md-3">
+                                    @Html.Label("Order Type")
+                                    @{
+                                        List<SelectListItem> selecttype = new List<SelectListItem>()
+                                                        { new SelectListItem{Text="None",Value="0",Selected=true},
+                                                            new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                            new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                            new SelectListItem{Text="BreakFast",Value="BreakFast"},
+                                                        };
+                                    }
+                                    @Html.DropDownList("Ordertype", selecttype, new { @class = "form-control" })
+
+                                </div>
+                                <div class="col-sm-2">
+
+                                    <button id="Search" class="btn btn-secondary" style="margin-top:15%"><i class="fa fa-search"></i> Search</button>
+                                </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+                            <div class="col" id="OrderList">
+
+
+                            </div>
+                        
+<script>
+    $("#Search").click(function () {
+                    $("#waiting").show();
+                    var CID = $("#CID").val();
+                    var MessId = $("#MID").val();
+                    var Ordertype = $("#Ordertype").val();
+                    $.ajax({
+                        type: 'GET',
+                        data: { CID: CID, MessId: MessId,Ordertype: Ordertype},
+                        url: "/Order/Index?Filter=True",
+                        success: function (data) {
+                            $("#OrderList").html(data);
+                            $("#waiting").hide();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback
+                            $("#waiting").hide();
+                        }
+                    });
+
+                });
+    $("#MID").click(function () {
+        MessSearch();
+    });
+    function MessSearch() {
+        $("#MID").select2({
+            ajax: {
+                url: "/Mess/LiveSearch",
+                dataType: 'json',
+                delay: 200,
+                data: function (params) {
+                    return {
+                        pageSize: 20,
+                        pageNum: params.page || 1,
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Results,
+                        pagination: {
+                            more: (params.page * 20) < data.Total
+                        }
+                    };
+                },
+                cache: true
+            },
+            //escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 0,
+            allowClear: true,
+            placeholder: "Select Mess Name",
+            tags: false,
+            tokenSeparators: [','],
+            dropdownAutoWidth: true
+            //templateResult: formatRepo,
+            //templateSelection: formatRepoSelection
+        }).on("select2:focus", function (e) {
+            $(this).select2('open');
+        });
+        $("#MID").select2('open');
+    }
+    function CustomerSearch() {
+        $("#CID").select2({
+            ajax: {
+                url: "/Customer/LiveSearch",
+                dataType: 'json',
+                delay: 200,
+                data: function (params) {
+                    return {
+                        pageSize: 20,
+                        pageNum: params.page || 1,
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Results,
+                        pagination: {
+                            more: (params.page * 20) < data.Total
+                        }
+                    };
+                },
+                cache: true
+            },
+            //escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 0,
+            allowClear: true,
+            placeholder: "Select Customer Name ",
+            tags: false,
+            tokenSeparators: [','],
+            dropdownAutoWidth: true
+            //templateResult: formatRepo,
+            //templateSelection: formatRepoSelection
+        }).on("select2:focus", function (e) {
+            $(this).select2('open');
+        });
+        $("#CID").select2('open');
+    }
+    $("#CID").click(function () {
+        CustomerSearch();
+    });
+
+</script>
+                                                break;
+                                            }
+                                        }
+
+
+
+

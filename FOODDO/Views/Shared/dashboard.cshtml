@@ -1,0 +1,144 @@
+﻿@using FOODDO.Models
+@{
+    Layout = null;
+    List<Orders> TodayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == DateTime.Now.Date);
+    List<Orders> YesterDayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == DateTime.Now.Date.AddDays(-1));
+    List<OrderItem> TodayOrderItemList=OrderItem.List.FindAll(x => x.OrderDate.Date == DateTime.Now.Date);
+    List<OrderItem> YestedayOrderItemList = OrderItem.List.FindAll(x => x.OrderDate.Date == DateTime.Now.Date.AddDays(-1));
+    List<Food> TodatFoodList = Food.List.FindAll(x => x.Create_Date.Date == System.DateTime.Now.Date);
+    int PendingAdminApproval = TodatFoodList.FindAll(x => x.AdminAprovalStatus == 0).Count;
+    // Int32 TodayTotalQty = TodayOrderItemList.Sum(x =>Int32.Parse(x.Qty));
+    // Int32 YsterDayQty= YestedayOrderItemList.Sum(x => Int32.Parse(x.Qty));
+}
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary " style=" width: 100%; height:100% ;box-shadow:2px 4px 4px black ;">
+            <div class="card-header text-center">Today Order</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Total Order
+                        <a href="#" id="TodayOrder" onclick="OrderListInfo('1')"><span class="badge badge-primary badge-pill">@TodayOrderList.Count.ToString()</span></a>
+                    </li>
+
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Total Order Items
+                        <a href="#" id="TodayOrderItem" onclick="OrderItemInfo('1');"><span class="badge badge-primary badge-pill">@TodayOrderItemList.Count.ToString()</span></a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-secondary " style=" width: 100%;  height:100% ;box-shadow:2px 4px 4px black ;">
+            <div class="card-header text-center">Yesterday Order</div>
+            <div class="card-body  ">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Total Order
+                        <a href="#" id="YesterdayOrder" onclick="OrderListInfo('2')"><span class="badge badge-primary badge-pill">@YesterDayOrderList.Count.ToString()</span></a>
+                    </li>
+
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Total Order Items
+                        <a href="#" id="YesterdayOrderItem" onclick="OrderItemInfo('2');"><span class="badge badge-primary badge-pill">@YestedayOrderItemList.Count.ToString()</span></a>
+                    </li>
+                </ul>
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-warning" style=" width: 100%; height:100% ;box-shadow:2px 4px 4px black ;">
+            <div class="card-header text-center">Today Created Food Info.</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Today 
+                        <a href="#" id="TodayFood" onclick="TodayFood('1')"><span class="badge badge-primary badge-pill">@TodatFoodList.Count.ToString()</span></a>
+                    </li>
+
+                    <li class="list-group-item d-flex text-dark justify-content-between align-items-center">
+                        Pending For Admin Approval
+                        <a href="#" id="TodayPendingFood" onclick="TodayFood('2');"><span class="badge badge-primary badge-pill">@PendingAdminApproval.ToString()</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function OrderItemInfo(status) {
+        $("#waiting").show();
+        $.ajax({
+
+            type: 'GET',
+            url: "/OrderItem/Index?OrderId=0&Status=" + status,
+            success: function (data) {
+                //makedpt("OrderItem");
+                $("#myModal2 .modal-body").html(data);
+                $("#myModal2").modal();
+                //  $("#OrderItem > .modal-dialog > .modal-content > .modal-body").html(data);
+                //  showdpt("OrderItem");
+
+                $("#waiting").hide();
+
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                $("#waiting").hide();
+            }
+        });
+
+    }
+    function OrderListInfo(orderstatus) {
+        $("#waiting").show();
+        $.ajax({
+            type: 'GET',
+            url: "/Order/Index?Status=" + orderstatus,
+            success: function (data) {
+                // $("#myModal .modal-body").html(data);
+                // $("#myModal").modal();
+                // alert(data);
+                //makedpt("OrderItem");
+                $("#myModal .modal-body").html(data);
+                $("#myModal").modal();
+                //  $("#OrderItem > .modal-dialog > .modal-content > .modal-body").html(data);
+                //  showdpt("OrderItem");
+
+                $("#waiting").hide();
+
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                $("#waiting").hide();
+            }
+        });
+
+    }
+    function TodayFood(Foodstatus) {
+        $("#waiting").show();
+        $.ajax({
+            type: 'GET',
+            url: "/Food/Index?Status=" + Foodstatus,
+            success: function (data) {
+                $("#myModal .modal-body").html(data);
+                $("#myModal").modal();
+                $("#waiting").hide();
+                setTimeout(function (){ LoadDataTable() },1000);
+
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                $("#waiting").hide();
+            }
+        });
+
+    }
+</script>
+
+

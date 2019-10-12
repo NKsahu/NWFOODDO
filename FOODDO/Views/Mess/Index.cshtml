@@ -1,0 +1,72 @@
+﻿@model IEnumerable<FOODDO.Models.Mess>
+@{ Layout = null;}
+
+<div class="card">
+    <div class="card-header">
+        Mess
+        <span class="float-right">
+            <a href="/Mess/Create?MID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+        </span>
+    </div>
+     
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <table class="table table-bordered table-hover" id="TBLID">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Image)</th>
+                                <th>@Html.DisplayNameFor(model => model.Mess_Name)</th>
+                                <th>@Html.DisplayNameFor(model => model.Address)</th>
+                                <th>@Html.DisplayNameFor(model => model.Mobile)</th>
+                                <th>@Html.DisplayNameFor(model=>model.Mobile2)</th>
+                                <th>@Html.DisplayNameFor(model => model.Owner_Name)</th>
+                                <th>@Html.DisplayNameFor(model=>model.NumberOfTifin)</th>
+                                <th>@Html.DisplayNameFor(model=>model.Create_Date)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>
+                                    @{item.Image = item.Image + "?T" + DateTime.Now;}
+                                    <img src="@item.Image" width="60" height="60" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Mess_Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Mobile)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Mobile2)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Owner_Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NumberOfTifin)
+                                </td>
+                                <td>
+                                   @item.Create_Date.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Mess/Create?MID=@item.MID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 

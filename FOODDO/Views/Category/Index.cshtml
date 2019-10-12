@@ -1,0 +1,68 @@
+﻿@model IEnumerable<FOODDO.Models.Category>
+@{ Layout = null;}
+
+<div class="card">
+    <div class="card-header"> Food Category</div>
+    <div class="card-body">
+        <div class="container">
+
+            @using (Ajax.BeginForm("Create", "Category", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnSuccess = "OnSuccess" }))
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.Hidden("Category_ID")
+                        @Html.TextBox("Name", "", new { @class = "form-control" })
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-secondary">Save</button>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header"> List Food Category</div>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <table class="table table-bordered table-hover" id="TBLID">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                                <th class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td class="name">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-sm btn-warning" onclick="Edit('@item.Category_ID','@item.Name')"><i class="fa fa-edit"></i></a>
+                                </td>
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Edit funcation
+    function Edit(id, name) {
+  
+        $("#Category_ID").val(id);
+        $("#Name").val($.trim(name));
+    }
+</script>

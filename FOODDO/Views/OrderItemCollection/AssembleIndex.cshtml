@@ -1,0 +1,294 @@
+﻿@using FOODDO.Models;
+@{ Layout = null;}
+
+@{
+
+    switch (Request.QueryString["Status"])
+    {
+        //case 1 for show filters only
+        case "1":
+
+            <div class="card">
+                <div class="card-header">Assemble  Filter </div>
+                <div class="card-body">
+                    <div class="container">
+                        @*@using (Ajax.BeginForm("index", "OrderItemCollection", new { Status = "2" }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "OrderList", LoadingElementId = "waiting", OnSuccess = "OnSuccess", OnFailure = "$('#waiting').hide();" }))*@
+
+                        <div class="row">
+                            @*<div class="col-md-3">
+                                @Html.Label("Customer Name")
+                                @{
+                                    List<Customer> CustomerList = Customer.List;
+                                    CustomerList.Add(new Customer {CID=0,Name="Select" });
+                                    SelectList SelectedMess = new SelectList(Customer.List, "CID", "Name",0);
+                                }
+                                @Html.DropDownList("CID", SelectedMess, new { @class = "form-control" })
+                            </div>
+                            <script>
+                                $("#CID").select2();
+                            </script>
+                            <div class="col-md-3">
+                                @Html.Label("Order No")
+                                @{
+                                    List<SelectListItem> CusomerList = new List<SelectListItem>();
+                                    //SelectList SelectedFood = new SelectList(Orders.List, "OID", "OID","Select");
+                                    for (int i = 0; i < Orders.List.Count; i++)
+                                    {
+                                        CusomerList.Add(new SelectListItem { Text = Orders.List[i].OID.ToString(), Value = Orders.List[i].OID.ToString() });
+                                    }
+                                    CusomerList.Add(new SelectListItem { Text = "Select", Value = "0", Selected = true });
+                                }
+                                @Html.DropDownList("OrderNo", CusomerList, new { @class = "form-control" })
+                                <script>
+                                    $("#OrderNo").select2();
+                                </script>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Order Type")
+                                @{
+                                    List<SelectListItem> selecttype = new List<SelectListItem>()
+                                                    { new SelectListItem{Text="None",Value="0",Selected=true},
+                                                        new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                        new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                        new SelectListItem{Text="BreakFast",Value="BreakFast"},
+                                                    };
+                                }
+                                @Html.DropDownList("Ordertype", selecttype, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2">
+
+                                <button id="Search" class="btn btn-secondary" style="margin-top:15%"><i class="fa fa-search"></i> Search</button>
+                            </div>*@
+
+                           <div class="col-md-4">
+                               @Html.Label("Scan Element Code")
+                               @Html.TextBox("TifinRackid",null,new {@class="form-control",@placeholder="Please Scan Element Code First" })
+
+                           </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Assemble Collected Order </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col" id="OrderList">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $("#TifinRackid").keypress(function (e) {
+                    if (e.which == 13) {
+                        var ElementCode = $("#TifinRackid").val();
+                        if (ElementCode == null || ElementCode == '0' || ElementCode == '') {
+                            //alert("Invalid Element Code");
+                            return;
+                        }
+                        $("#waiting").show();
+                        $.ajax({
+                            type: 'GET',
+                            data: { TifinRackid: ElementCode },
+                            url: "/OrderItemCollection/AssembleIndex?Status=2",
+                            success: function (data) {
+                                $("#OrderList").html(data);
+                                $("#waiting").hide();
+                                $("#TIFINID").focus();
+
+                                var Text = $(".msg").text();
+                                //responsiveVoice.getResponsiveVoice('Hindi Female');
+                                responsiveVoice.setDefaultVoice("Hindi Female");
+                                responsiveVoice.speak(Text);
+                                
+                            },
+                            error: function (jqXhr, textStatus, errorMessage) { // error callback
+                                JObj = JSON.parse(jqXhr.responseText);
+                                //Onfail(JObj.msg);
+                                responsiveVoice.speak(JObj.msg);
+                                $("#waiting").hide();
+                            }
+                        });
+
+                    }
+                });
+
+                //$("#Search").click(function () {
+                //    $("#waiting").show();
+                //    var CID = $("#CID").val();
+                //    var OrderNo = $("#OrderNo").val();
+                //    var Ordertype = $("#Ordertype").val();
+                //    $.ajax({
+                //        type: 'GET',
+                //        data: { CID: CID, OrderNo: OrderNo,Ordertype: Ordertype},
+                //        url: "/OrderItemCollection/AssembleIndex?Status=2",
+                //        success: function (data) {
+                //            $("#OrderList").html(data);
+                //            $("#waiting").hide();
+                //        },
+                //        error: function (jqXhr, textStatus, errorMessage) { // error callback
+                //            $("#waiting").hide();
+                //        }
+                //    });
+
+                //});
+
+            </script>
+
+            break;
+
+        case "2":
+            Orders ObjOrder = new Orders();
+            Customer ObjCustomer = new Customer();
+            OrderItem orderItem = (OrderItem)ViewData["OrderItemObj"];
+            if (orderItem != null)
+            {
+                ObjOrder = Orders.List.Find(x => x.OID == orderItem.OID);
+                ObjCustomer = Customer.List.Find(x => x.CID == ObjOrder.CID);
+                if (ObjOrder != null)
+                {
+
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            S.NO
+                        </th>
+                        <th>
+                            Customer Name
+                        </th>
+                        <th>
+                            ORDER NO
+                        </th>
+
+                        <th>
+                            ITEM NAME
+                        </th>
+                        <th>
+                            TIFINS IN ORDER
+                        </th>
+                        <th>
+                            TIFIN CODE
+                        </th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                int SerialNo = 1;
+            }
+                    <tr id="@(orderItem.OIID)">
+                        <td class="text-center SN">
+                            @SerialNo.ToString()
+                        </td>
+                        <td>
+                            @{
+                                string customername = "";
+                                if (ObjCustomer != null)
+                                {
+                                    customername = ObjCustomer.Name;
+                                }
+    }
+    @customername
+</td>
+                        <td>
+                            @ObjOrder.OID.ToString()
+                        </td>
+
+                        <td>
+                            @{ SerialNo++;
+                                string FoodName = "";
+    Food ObjFood = Food.List.Find(x => x.FID == orderItem.FID);
+                                if (ObjFood != null) { FoodName = ObjFood.Food_Name; }
+                            }
+                            @FoodName
+                        </td>
+                        @{ 
+                            string[] tifins;
+                            int TotalTifin = 0;
+                            string msg = "Allot New Tifin";
+                            if (ObjOrder.TifinIds.Contains(","))
+                            {
+                                tifins = ObjOrder.TifinIds.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                //= ObjOrder.TifinIds.Split(',');
+                                TotalTifin = tifins.Length;
+                                string Tifins = string.Join(",", tifins);
+                                msg = "Alloted Tifin " + Tifins;
+                            }
+                        }
+                        <td class="msg">@msg
+                        </td>
+                        <td>
+                            <input id="TIFINID" OIID="@(ObjOrder.OID)" class="TifinCode" name="TifinCode" style="width:100%" type="text" placeholder="Enter Tifin Code or Scan It." value="">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <script>
+                function AssembleItem(OrderId) {
+                    var TifinCode = $(OrderId).val();
+                    var OrderItemId = $(OrderId).parent('td').parent('tr').attr('id');
+                    var OrderID = $(OrderId).attr('OIID');
+                    if (TifinCode === undefined || TifinCode === null || TifinCode === "" || TifinCode == "0") {
+            alert("Please Select Tifin Code First");
+            return;
+        }
+                    $("#waiting").show();
+                    $.ajax({
+                        type: 'GET',
+                        data: { OrderId: OrderID, TifinCode: TifinCode, OrderItemId: OrderItemId},
+                        url: "/OrderItemCollection/PostDataAssemble",
+                        success: function (data) {
+                            $("#TIFINID").replaceWith("<p>" + TifinCode + "</p>");
+                            $("#TifinRackid").val('');
+                            $("#TifinRackid").focus();
+                            $("#TifinRackid").attr("placeholder", "Scan New Element ");
+                            $("#waiting").hide();
+            },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback
+                JObj = JSON.parse(jqXhr.responseText);
+               // Onfail(JObj.msg);
+                            responsiveVoice.speak(JObj.msg);
+                            $("#waiting").hide();
+            },
+                        complete: function () {
+
+            }
+        });
+
+
+    }
+                $('#TIFINID').keypress(function (i) {
+                    if (i.which == 13) {
+                        AssembleItem(this);
+           
+        }
+                });
+
+            </script>
+                                            }
+
+
+                                            
+                                        }
+
+
+                                        break;
+                                   
+
+                                }
+
+
+
+
+                                }
+

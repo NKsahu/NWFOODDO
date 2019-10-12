@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FOODDO.Models.Ledger>
+@{ Layout = null;}
+<div class="card w-100">
+    <div class="card-header">Ledger Result</div>
+    <div class="card-body">
+        <table class="table table-hover table-bordered" id="TBLID2">
+            <thead>
+                <tr>
+                    <th>
+                       Entry ID
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Entry_Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Debit)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Credit)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LID)
+                    </td>
+                    <td>
+                        @item.Entry_Date.ToString("dd-MM-yyyy")
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Debit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Credit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var i = 0;
+    $(document).ready(function () {
+
+        setTimeout(function () { Loadtable(); }, 1000);
+        
+    });
+    function Loadtable() {
+        $("#TBLID2").DataTable({
+            "scrollY": "300px",
+            "scrollCollapse": true,
+            "paging": false,
+            "sScrollX": "100%",
+            "bScrollCollapse": true,
+            "dom": 'Bfrtip',
+            "buttons": ['excel', 'pdf', 'print']
+        });
+    }
+</script>

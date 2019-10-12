@@ -1,0 +1,204 @@
+﻿
+<!-- header -->
+<header class="navbar navbar-expand-sm text-white w-100 p-0" style="background:#34495E;z-index:1;">
+    <div class="col-md-8 col-12 text-md-left text-center mt-0">
+        <a class="text-white navbar-brand pl-3" style="font-size:23px;"> Admin Panel</a>
+        <a href="#" id="toggle-admin-menu" class="text-white ml-md-4"><i class="fa fa-bars border border-secondary rounded" style="font-size:17px;padding:4px 6px;"></i></a>
+    </div>
+
+    <div class="col-md-4 col-12  text-md-right text-center p-md-2 p-2 border-top border-dark mt-0">
+        <div class="btn-group mt-0">
+            <a href="/User/Account" class="text-white m-1"><i class="fa fa-rupee-sign border border-secondary rounded" style="font-size:17px;padding:4px 6px;"></i></a>
+        </div>
+        <div class="btn-group mt-0">
+            <a href="#" class="text-white m-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sign-out-alt border border-secondary rounded" style="font-size:17px;padding:4px 6px;"></i></a>
+            <div class="dropdown-menu dropdown-menu-right text-center pb-0">
+                <h6 class="mt-2 mb-2">@Session["USERNAME"]</h6>
+                <a href="/User/Logout" id="logoutbtn" class="btn btn-sm btn-block btn-dark mt-1 nav-item"><i class="fa fa-lock"> Sign Out</i> </a>
+                <style>
+                    #logoutbtn > i:hover {
+                        border: none !important;
+                        background: none !important;
+                    }
+                </style>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<div class="row">
+    <!-- admin side menus -->
+    <div id="admin-side-menu" class="col-md-2 col-12 ml-sm-auto m-0 p-0 " style="background-color: #34495E;">
+        <ul id="myaccordion" class="list-unstyled mb-0">
+            <li class="nav-item" data-parent="#myaccordion">
+                <a class="nav-link" href="/User/CallViewWithViewName?VN=dashboard" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"><i class="fa fa-tachometer-alt"></i> DashBoard</a>
+            </li>
+
+            @if (Convert.ToString(Session["USERTYPE"]).Equals("ADMIN"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link have-sub-menu collapsed" href="#" data-target="#Master" data-toggle="collapse">
+                        <i class="fa fa-desktop-alt"></i> Master<span class="fa fa-plus"></span>
+                    </a>
+                    <ul id="Master" class="collapse list-unstyled" data-parent="#myaccordion">
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Mess/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-cocktail "></i> Mess</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Food/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-database"></i> Foods</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Category/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-utensils "></i> Food Catetory</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Customer/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-female"></i> Customer</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Tifin/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-box"></i> Tifin</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/TifinRack/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-cart-plus"></i> Tifin Elements</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/DeliveryBoy/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-user-tie "></i> Delivery Boy</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Route/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-map "></i>HUBS</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion">
+                            <a class="nav-link" href="/Settings/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-wrench"></i>FooDdo Settings</a>
+                        </li>
+                        <li class="nav-item" data-parent="#myaccordion" style="display:none">
+                            <a class="nav-link" href="/Menu/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-wrench"></i>Menu</a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item" data-parent="#myaccordion">
+                    <a class="nav-link" href="/OrderItemCollection/Index?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-layer-group"></i>Collect Item</a>
+                </li>
+
+                <li class="nav-item" data-parent="#myaccordion">
+                    <a class="nav-link" href="/OrderItemCollection/AssembleIndex?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-box"></i> Assembling</a>
+                </li>
+                <li class="nav-item" data-parent="#myaccordion">
+                    <a class="nav-link" href="/OrderItemCollection/AlloteTifin?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-wrench"></i>Tifin Allotement</a>
+                </li>
+                <li class="nav-item" data-parent="#myaccordion">
+                    <a class="nav-link" href="/Address/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-street-view "></i> Customer Address</a>
+                </li>
+
+            }
+            <li class="nav-item">
+                <a class="nav-link have-sub-menu collapsed" href="#" data-target="#Report" data-toggle="collapse">
+                    <i class="fa fa-desktop-alt"></i>Reports<span class="fa fa-plus"></span>
+                </a>
+
+                <ul id="Report" class="collapse list-unstyled" data-parent="#myaccordion">
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Order/CustomerReport?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-users"></i>Customer Order</a>
+                    </li>
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Order/Index?Today=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-vector-square"></i> ToDay Order</a>
+                    </li>
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Order/Index?Yesterday=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-file-code"></i> YesterDay Order</a>
+                    </li>
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Order/TotalOrderListFilter?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-file"></i>Order List</a>
+                    </li>
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Order/HubWiseOrderStatusReportFilter?Status=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-shopping-cart"></i>Hub Wise Order</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link have-sub-menu collapsed" href="#" data-target="#print" data-toggle="collapse">
+                    <i class="fa fa-desktop-alt"></i>Print<span class="fa fa-plus"></span>
+                </a>
+                <ul id="print" class="collapse list-unstyled" data-parent="#myaccordion">
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/Tifin/Index?PrintOnly=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-box"></i>Tifin</a>
+                    </li>
+                    <li class="nav-item" data-parent="#myaccordion">
+                        <a class="nav-link" href="/TifinRack/Index?PrintOnly=1" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-cart-plus"></i>TifinRack</a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="nav-item" data-parent="#myaccordion">
+                <a class="nav-link" href="/User/Index" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-user-circle"></i> Users</a>
+            </li>
+        </ul>
+    </div>
+    <!-- End admin side menus -->
+    <div class="col-md-10 col-12 mt-0 p-0" id="DynamicData">
+        @{ Html.RenderPartial("dashboard"); }
+
+    </div>
+    
+</div>
+
+<!-- Right Menu -->
+@*<div class="container-fluid right-menu collapse bg-white p-1" style="transition:ease-in-out 0.1s;position:fixed; top:42px;right:0px;width:260px;min-height:550px;z-index:1;box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);">
+        <div class="row">
+                    <b class="list-group-item active text-center w-100">NOTIFICATINS</b>
+        </div>
+    </div>*@
+<!-- End Right Menu -->
+
+<script>
+    $(document).ready(function () {
+
+        // loading time set size
+        if ($(window).width() <= 700) {
+            $("#admin-side-menu").addClass("d-none");
+            $("#DynamicData").removeAttr("class");
+            $("#DynamicData").addClass("col-md-12 col-12 mt-0 p-0");
+        }
+        else {
+            $("#admin-side-menu").removeClass("d-none");
+            $("#DynamicData").removeAttr("class");
+            $("#DynamicData").addClass("col-md-10 col-12 mt-0 p-0");
+        }
+
+
+        // onclick admin toggle menu btn
+        $("#toggle-admin-menu").click(function () {
+            if ($("#admin-side-menu").hasClass("d-none")) {
+                    $("#admin-side-menu").removeClass("d-none");
+                    $("#DynamicData").removeAttr("class");
+                    $("#DynamicData").addClass("col-md-10 mt-0 p-0");
+                }
+                else {
+                    $("#admin-side-menu").addClass("d-none");
+                    $("#DynamicData").removeAttr("class");
+                    $("#DynamicData").addClass("col-md-12 mt-0 p-0");
+                }
+            });
+
+        // accordian toggle
+            $("#admin-side-menu > ul > li > a").click(function () {
+                $("#admin-side-menu > ul > li").removeClass("activeted");
+                $(this).parent("li").addClass("activeted");
+
+                if ($(this).hasClass("have-sub-menu")) {
+                        $("#admin-side-menu > ul > li").find("span").removeClass("fa-minus");
+                        $("#admin-side-menu > ul > li").find("span").addClass("fa-plus");
+                    if ($(this).hasClass("collapsed")) {
+                        $(this).find("span").removeClass("fa-plus");
+                        $(this).find("span").addClass("fa-minus");
+                    }
+                }
+            });
+
+    });
+
+
+</script>
+

@@ -1,0 +1,350 @@
+﻿@using FOODDO.Models;
+@{ Layout = null;}
+
+@{
+
+    switch (Request.QueryString["Status"])
+    {
+        //case 1 for show filters only
+        case "1":
+
+            <div class="card">
+                <div class="card-header">Filter </div>
+                <div class="card-body">
+                    <div class="container">
+                        @*@using (Ajax.BeginForm("index", "OrderItemCollection", new { Status = "2" }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "OrderList", LoadingElementId = "waiting", OnSuccess = "OnSuccess", OnFailure = "$('#waiting').hide();" }))*@
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                @Html.Label("Customer Name")
+                                @{
+                                   
+                                        List<SelectListItem> CustomerSelectList = new List<SelectListItem>()
+                                                                        {
+                                                                            new SelectListItem{ Text="Select" ,Value="0"}
+                                                                        };
+                                    
+                                }
+                                @Html.DropDownList("UserId", CustomerSelectList, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-2">
+                                @Html.Label("Mess Name")
+                                @{
+                                    List<SelectListItem> MessSelectList = new List<SelectListItem>()
+                                                                                        {
+                                                                                            new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                        };
+                                }
+                                @Html.DropDownList("MessId", MessSelectList, new { @class = "form-control" })
+                            </div>
+                           
+                            <div class="col-md-2">
+                                @Html.Label("Order Type")
+                                @{
+                                    List<SelectListItem> selecttype = new List<SelectListItem>()
+                                                                                                                    {
+                                                                                                                        new SelectListItem{Text="None",Value="0"},
+                                                                                                                        new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                                                                                        new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                                                                                        new SelectListItem{Text="BreakFast",Value="BreakFast"},
+                                                                                                                    };
+                                }
+                                @Html.DropDownList("Ordertype", selecttype, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-md-1">
+
+                                @Html.Label("By Date")
+                                @{
+                                    List<SelectListItem> BydateSelectList = new List<SelectListItem>()
+                                                    {
+                                                        new SelectListItem{Text="No",Value="0"},
+                                                        new SelectListItem{Text="Yes",Value="1"}
+                                                    };
+                                }
+                                @Html.DropDownList("Bydate", BydateSelectList, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-2">
+                                @Html.Label("FromDate")
+                                @Html.TextBox("FDate", DateTime.Now.ToString("dd-MM-yyyy"), new { @class = "form-control DateField" })
+
+                            </div>
+                            <div class="col-md-2">
+                                @Html.Label("ToDate")
+                                @Html.TextBox("TDate", DateTime.Now.ToString("dd-MM-yyyy"), new { @class = "form-control DateField" })
+
+                            </div>
+                            <div class="col-sm-2">
+
+                                <button id="Search" class="btn btn-secondary" style="margin-top:15%"><i class="fa fa-search"></i> Search</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Customer Order List </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col" id="CustomerWiseReport">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                BydateFilter();
+                $("#Search").click(function () {
+                    $("#waiting").show();
+                    var UserId = $('#UserId').val();
+                    var MessId = $("#MessId").val();
+                    var Ordertype = $("#Ordertype").val();
+                    var Bydate = $("#Bydate").val();
+                    var Fdate = $("#FDate").val();
+                    var Tdate = $("#TDate").val();
+                    $.ajax({
+                        type: 'GET',
+                        data: { UserId: UserId, MessId: MessId,  Ordertype: Ordertype, Bydate: Bydate, Fdate: Fdate, Tdate: Tdate},
+                        url: "/Order/CustomerReport?Status=2",
+                        success: function (data) {
+                            $("#CustomerWiseReport").html(data);
+                            $("#waiting").hide();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback
+                            $("#waiting").hide();
+                        }
+                    });
+
+                });
+                function BydateFilter() {
+                    var Bydate = $("#Bydate").val();
+                    if (Bydate == "1") {
+                        $("#FDate").parent('div').show();
+                        $("#TDate").parent('div').show();
+                    }
+                    else {
+                        $("#FDate").parent('div').hide();
+                        $("#TDate").parent('div').hide();
+                    }
+
+                }
+                $("#Bydate").change(function () {
+                    BydateFilter();
+                });
+                function MessSearch() {
+                    $("#MessId").select2({
+                        ajax: {
+                            url: "/Mess/LiveSearch",
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return {
+                                    pageSize: 20,
+                                    pageNum: params.page || 1,
+                                    searchTerm: params.term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data.Results,
+                                    pagination: {
+                                        more: (params.page * 20) < data.Total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        //escapeMarkup: function (markup) { return markup; },
+                        minimumInputLength: 0,
+                        allowClear: true,
+                        placeholder: "Select Mess Name",
+                        tags: false,
+                        tokenSeparators: [','],
+                        dropdownAutoWidth: true
+                        //templateResult: formatRepo,
+                        //templateSelection: formatRepoSelection
+                    }).on("select2:focus", function (e) {
+                        $(this).select2('open');
+                    });
+                    $("#MessId").select2('open');
+                }
+                $("#MessId").click(function () {
+                    MessSearch();
+                });
+
+                function CustomerSearch() {
+                    $("#UserId").select2({
+                        ajax: {
+                            url: "/Customer/LiveSearch",
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return {
+                                    pageSize: 20,
+                                    pageNum: params.page || 1,
+                                    searchTerm: params.term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data.Results,
+                                    pagination: {
+                                        more: (params.page * 20) < data.Total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        //escapeMarkup: function (markup) { return markup; },
+                        minimumInputLength: 0,
+                        allowClear: true,
+                        placeholder: "Select Customer Name ",
+                        tags: false,
+                        tokenSeparators: [','],
+                        dropdownAutoWidth: true
+                        //templateResult: formatRepo,
+                        //templateSelection: formatRepoSelection
+                    }).on("select2:focus", function (e) {
+                        $(this).select2('open');
+                    });
+                    $("#UserId").select2('open');
+                }
+                $("#UserId").click(function () {
+                    CustomerSearch();
+                });
+
+            </script>
+
+                                        break;
+
+                                    case "2":
+                                        List<Customer> CustomerList = Customer.List;
+                                        List<OrderItem> OrderItemList = OrderItem.List;
+                                        List<Orders> OrderList = Orders.List;
+                                        string UserId = Request.QueryString["UserId"];
+                                        string MessId = Request.QueryString["MessId"];
+                                        string FoodId = Request.QueryString["FoodId"];
+                                        string Ordertype = Request.QueryString["Ordertype"];
+                                        string ByDate= Request.QueryString["Bydate"];
+                                        string Fdate= Request.QueryString["Fdate"];
+                                        string Tdate = Request.QueryString["Tdate"];
+                                        if (UserId!=null&& UserId!=""&& UserId != "0")
+                                        {
+                                            OrderList = OrderList.FindAll(x => x.CID == int.Parse(UserId));
+                                        }
+                                        if(MessId!=null&& MessId!=""&& UserId != "0")
+                                        {
+                                            OrderItemList = OrderItemList.FindAll(x => x.MessID == int.Parse(MessId));
+                                            OrderList = OrderList.FindAll(x => x.MessIDs.Contains(MessId.ToString()));
+                                        }
+                                        if(FoodId!=null&&FoodId!="0"&& FoodId != "")
+                                        {
+                                            OrderItemList = OrderItemList.FindAll(x => x.FID == int.Parse(FoodId));
+                                        }
+                                        if (Ordertype!=null&& Ordertype != "" && Ordertype != "0")
+                                        {
+                                            OrderList = OrderList.FindAll(x => x.Type == Ordertype);
+                                        }
+                                        if(ByDate!=null&& ByDate =="1")
+                                        {
+                                            OrderList = OrderList.FindAll(x => x.Create_Date.Date >= DateTime.Parse(Fdate) && x.Create_Date.Date <= DateTime.Parse(Tdate));
+                                        }
+                                        HashSet<Int64> OrderItemOIdHash = new HashSet<Int64>(OrderItemList.Select(x => x.OID).ToArray());
+                                        OrderList = OrderList.FindAll(x => OrderItemOIdHash.Contains(x.OID));
+                                      
+
+
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th>Order Date</th>
+                        <th class="text-center">
+                            Customer Name
+                        </th>
+                        <th>
+                            MessName
+                        </th>
+                        <th>
+                            No Of Items
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                       <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @foreach (var item in OrderList)
+                    {
+                        <tr >
+                            <td>
+                                @item.Create_Date.Date.ToString("dd-MM-yyyy")
+                            </td>
+                            <td class="text-center SN">
+                               @{ 
+                                   string CustomerName = " ";
+                                   Customer ObjCustomer = CustomerList.Find(x => x.CID == item.CID);
+                                   if (ObjCustomer != null)
+                                   {
+                                       CustomerName = ObjCustomer.Name;
+                                   }
+                               }
+                                @CustomerName
+                            </td>
+                            <td>
+                                @{ 
+                                    string MessNames = "";
+                                    string[] MessIds = item.MessIDs.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (MessId.Length > 0)
+                                    {
+                                        for (int i = 0; i < MessId.Length; i++)
+                                        {
+                                            Mess ObjMess = Mess.List.Find(x => x.MID.ToString() ==MessId[i].ToString());
+                                            if (ObjMess != null)
+                                            {
+                                                MessNames += ObjMess.Mess_Name;
+                                            }
+                                        }
+                                    }
+                                }
+                                @MessNames
+                            </td>
+                            <td>
+                                @{ 
+                                    int TotalItems = OrderItemList.FindAll(x => x.OID == item.OID).Count;
+                                }
+                                @TotalItems
+                            </td>
+                            <td class="TotalItems">@item.Type</td>
+                            <td>
+                               @item.Status
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+                                            break;
+
+                                        default:
+                                            break;
+
+                                    }
+
+
+
+
+}
+

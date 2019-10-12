@@ -1,0 +1,94 @@
+﻿@model FOODDO.Models.Mess
+@{ Layout = null;}
+
+<div class="card">
+    <div class="card-header bg-secondary" style="color:#ffdb00"><i class="fa fa-edit"></i> Mess </div>
+    <div class="card-body">
+        @using (Ajax.BeginForm("Create", "Mess", new { MID = Model.MID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnSuccess = "OnSuccess" }))
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col text-center">
+                        @if (@Model.MID > 0)
+                        {
+
+                            <img id="DemoUser" src="@Model.Image" width="110" height="110" class="mb-4" /><br />
+                            <input type="file" id="MessImg" name="MessImg" accept="image/jpeg" onChange="document.getElementById('DemoUser').src = window.URL.createObjectURL(this.files[0])" />
+                        }
+                        else
+                        {
+                            <img id="DemoUser" src="~/WebsiteImg/MessLogo.jpg" width="110" height="110" class="mb-4" /><br />
+                            <input type="file" id="MessImg" name="MessImg" value="" required accept="image/jpeg" onChange="document.getElementById('DemoUser').src = window.URL.createObjectURL(this.files[0])" />
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                @Html.HiddenFor(Model => Model.MID)
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.Mess_Name, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Mess_Name, new { htmlAttributes = new { @class = "form-control OnlyChar", required = "required" } })
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Owner_Name, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Owner_Name, new { htmlAttributes = new { @class = "form-control OnlyChar", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control OnlyNum", required = "required", maxlength = "10" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Mobile2, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Mobile2, new { htmlAttributes = new { @class = "form-control OnlyNum", maxlength = "10", value = " " } })
+                </div>
+
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Aadhar_No, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Aadhar_No, new { htmlAttributes = new { @class = "form-control ", required = "required", maxlength = "12" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Pan_No, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Pan_No, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Bank_Name, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Bank_Name, new { htmlAttributes = new { @class = "form-control OnlyChar", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.Account_No, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Account_No, new { htmlAttributes = new { @class = "form-control OnlyNum", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.IFSC, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.IFSC, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.NumberOfTifin, htmlAttributes: new { @class = "control-label " })
+                    @Html.TextBoxFor(model => model.NumberOfTifin, new { @class = "form-control OnlyNum", required = "required" })
+                </div>
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.MessType, htmlAttributes: new { @class = "control-label " })
+                    @{ 
+                        List<SelectListItem> MessType = new List<SelectListItem>()
+                        {
+                            new SelectListItem{Text="VEG",Value="VEG"},
+                            new SelectListItem{Text="NON-VEG",Value="NON-VEG"},
+                            new SelectListItem{Text="BOTH",Value="BOTH"}
+                        };
+                    }
+                    @Html.DropDownListFor(model => model.MessType,MessType, new { @class = "form-control ", required = "required" })
+                </div>
+                <div class="col-md-12 text-right mt-4">
+                    <button type="submit" class="btn btn-secondary">Save</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+ 

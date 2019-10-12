@@ -1,0 +1,63 @@
+﻿@model IEnumerable<FOODDO.Models.Routes>
+
+@{ Layout = null;}
+<div class="card">
+    <div class="card-header">
+        HUBS
+        <span class="float-right">
+            <span class="float-right">
+                <a href="/Route/CreateRoute?RouteID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.HubName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.HubCode)
+                        </th>
+                        <th>@Html.DisplayNameFor(model => model.HubOwnerName)</th>
+                        <th>@Html.DisplayNameFor(model => model.MobileNo)</th>
+                        <th>@Html.DisplayNameFor(model => model.Mobile2)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HubName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HubCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HubOwnerName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MobileNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mobile2)
+                        </td>
+                        <td>
+                            <a href="/Route/CreateRoute?routeid=@item.HubID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+
+                        </td>
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

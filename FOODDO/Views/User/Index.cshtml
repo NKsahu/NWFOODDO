@@ -1,0 +1,57 @@
+﻿@model IEnumerable<FOODDO.Models.Users>
+@{ Layout = null;}
+<div class="card">
+    <div class="card-header">Users
+        <span class="float-right">
+            <span class="float-right">
+                <a href="/User/Create?UID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            @Html.DisplayNameFor(model => model.UID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.User_Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Password)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.User_Type)
+                        </th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.UID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.User_Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Password)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.User_Type)
+                        </td>
+                        <td class="text-center">
+                            <a href="/User/Create?UID=@item.UID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

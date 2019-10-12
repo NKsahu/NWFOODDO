@@ -1,0 +1,74 @@
+﻿@using System.Web.Mvc
+@using FOODDO.Models
+@{ Layout = null;}
+@{
+    var FC = Request.Form;
+    System.Collections.Generic.List<Ledger> ListLedger = Ledger.List.FindAll(x => x.CID == System.Convert.ToInt64(FC["LID"]));
+    System.DateTime FD = System.Convert.ToDateTime(FC["FD"]);
+    System.DateTime TD = System.Convert.ToDateTime(FC["TD"]);
+    ListLedger = ListLedger.FindAll(x => x.Entry_Date.Date >= FD && x.Entry_Date.Date <= TD);
+    double ClosingCr = ListLedger.Sum(x => x.Credit) - ListLedger.Sum(x => x.Debit);
+    //double ClosingDr = ListLedger.Sum(x => x.Debit) - ListLedger.Sum(x => x.Credit);
+    string Type = FC["Type"];
+    string LID = "0";
+    string Name = "";
+    if (Type == "CUSTOMER")
+    {
+        Customer cus = Customer.List.Find(x => x.CID == System.Convert.ToInt64(FC["LID"]));
+        LID = cus.CID.ToString();
+        Name = cus.Name;
+    }
+    else if (Type == "MESS")
+    {
+        Mess cus = Mess.List.Find(x => x.MID == System.Convert.ToInt64(FC["LID"]));
+        LID = cus.MID.ToString();
+        Name = cus.Mess_Name;
+    }
+    else if (Type == "HUBOWNER")
+    {
+        List<Routes> ListRoute = new Routes().RouteList();
+        Routes cus = ListRoute.Find(x => x.HubID == System.Convert.ToInt64(FC["LID"]));
+        LID = cus.HubID.ToString();
+        Name = cus.HubOwnerName;
+    }
+    else
+    {
+        DeliveryBoy cus = DeliveryBoy.List.Find(x => x.DBID == System.Convert.ToInt64(FC["LID"]));
+        LID = cus.DBID.ToString();
+        Name = cus.Name;
+
+    }
+}
+<div class="card w-100">
+    <div class="card-header">Ledger Info</div>
+    <div class="card-body">
+        <table class="table table-hover table-bordered" id="TBLID">
+            <thead>
+                <tr>
+                    <th>
+                        LEDGER ID
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                    <th>
+                        Closing (CR)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@LID</td>
+                    <td>@Name</td>
+                    <td class="text-center">
+                        <a href="/Ledger/Filter?LID=@LID&FD=@FD&TD=@TD" title="Click For Details" class="btn btn-info btn-sm" data-ajax="true" data-ajax-update="#myModal2 .modal-body"data-ajax-complete="$('#myModal2').modal();" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-eye"></i></a>
+                    </td>
+                    <td>@ClosingCr.ToString("0.00")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+﻿@model IEnumerable<FOODDO.Models.Food>
+@using FOODDO.Models;
+@{ Layout = null;}
+
+
+<div class="card">
+        <div class="card-header"> Foods
+            <span class="float-right">
+                <a href="/Food/Create?FID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+    </div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+
+                        <table class="table table-bordered table-hover" id="TBLID">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Food_Image)</th>
+
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Food_Name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.CostPrice)
+                                    </th>
+                                    <th>
+                                        Selling Price
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Qty)
+                                    </th>
+                                    <th>Category</th>
+                                    <th>Mess</th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Description)
+                                    </th>
+                                    <th class="text-center">@Html.DisplayNameFor(model => model.Status)</th>
+                                    <th>Approval Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td class="text-center">
+                                        @*@{item.Food_Image = item.Food_Image + "?T" + DateTime.Now;}*@
+                                        <img src="@item.Food_Image?T+@DateTime.Now" width="60" height="60" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Food_Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CostPrice)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Qty)
+                                    </td>
+                                    <td>
+                                        @{Category Obj = Category.List.Find(x => x.Category_ID == item.Category_ID);}
+                                        @Obj.Name
+                                    </td>
+                                    <td>
+                                        @{Mess ObjMess = Mess.List.Find(x => x.MID == item.MID);}
+                                        @ObjMess.Mess_Name
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </td>
+                                    @{
+                                        if (item.AdminAprovalStatus == 1)
+                                        {
+                                            <td>
+                                                <button id="@item.FID" title="Click To UnApprove " class="noprint btn float-left btn-sm btn-success" onclick="ClickTOUnUprove(this);">UnUpprove</button>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <button id="@item.FID" title="Click To Approve" class="noprint btn float-left btn-sm btn-danger" onclick="ClickTOAprove(this);">Upprove</button>
+                                            </td>
+                                                }
+                                    }
+                                    <td class="text-center">
+                                        <a href="/Food/Create?FID=@item.FID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function ClickTOUnUprove(event) {
+        $("#waiting").show();
+        var Fid = $(event).attr('id');
+        $.ajax({
+            type: 'GET',
+            url: "/Food/UpdateApproval?Status=0&Fid=" +Fid,
+            success: function (data) {
+                $(event).replaceWith("<p>UnApproved</p>");
+                $("#waiting").hide();
+                
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                
+               JObj = JSON.parse(jqXhr.responseText);
+             Onfail(JObj.msg);
+            }
+        });
+    }
+    function ClickTOAprove(event) {
+        $("#waiting").show();
+        var Fid = $(event).attr('id');
+        $.ajax({
+            type: 'GET',
+            url: "/Food/UpdateApproval?Status=1&Fid="+ Fid,
+            success: function (data) {
+                $(event).replaceWith("<p>Approved</p>");
+                $("#waiting").hide();
+
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                 JObj = JSON.parse(jqXhr.responseText);
+                Onfail(JObj.msg);
+            }
+        });
+    }
+
+
+</script>
+     

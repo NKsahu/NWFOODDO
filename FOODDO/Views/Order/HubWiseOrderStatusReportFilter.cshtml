@@ -1,0 +1,315 @@
+﻿@model IEnumerable<FOODDO.Models.Orders>
+@using FOODDO.Models;
+@{ Layout = null;}
+@{
+        List<OrderItem> ListOfOrderItem = OrderItem.List;
+        List<Orders> orders = Orders.List;
+        List<Routes> HubList = new Routes().RouteList();
+        if(Request.QueryString["HID"]!=null&& Request.QueryString["HID"]!=""&& Request.QueryString["HID"] != "0")
+        {
+            HubList = HubList.FindAll(x => x.HubID == int.Parse(Request.QueryString["HID"]));
+        }
+        if (Request.QueryString["CID"] != null && Request.QueryString["CID"] != "" && Request.QueryString["CID"] != "0")
+        {
+            orders = orders.FindAll(x => x.CID == int.Parse(Request.QueryString["CID"]));
+        }
+        if (Request.QueryString["OrderType"] != null && Request.QueryString["OrderType"] != "" && Request.QueryString["OrderType"] != "0")
+        {
+            orders = orders.FindAll(x => x.Type == Request.QueryString["OrderType"]);
+        }
+        int AssemlbeCount = orders.FindAll(x => x.Status == "Order-Assemble").Count;
+        int NotAssemble = orders.Count - AssemlbeCount;
+        switch (Request.QueryString["Status"])
+        {
+            //case 1 for show filters only
+            case "1":
+
+            <div class="card">
+                <div class="card-header">  Filter </div>
+                <div class="card-body">
+                    <div class="container">
+                        @*@using (Ajax.BeginForm("index", "OrderItemCollection", new { Status = "2" }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "OrderList", LoadingElementId = "waiting", OnSuccess = "OnSuccess", OnFailure = "$('#waiting').hide();" }))*@
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.Label("Hub Name")
+                                @{
+
+                                    List<SelectListItem> HubSelectList = new List<SelectListItem>()
+                                                                                                                                            {
+                                                                                                                                                new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                                                                            };
+
+                                }
+                                @Html.DropDownList("HID", HubSelectList, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Order Type")
+                                @{
+                                    List<SelectListItem> selecttype = new List<SelectListItem>()
+                                                                                                        { new SelectListItem{Text="None",Value="0",Selected=true},
+                                                                                                            new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                                                                            new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                                                                            new SelectListItem{Text="BreakFast",Value="BreakFast"},
+                                                                                                        };
+                                }
+                                @Html.DropDownList("Ordertype", selecttype, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Customer Name")
+                                @{
+
+                                    List<SelectListItem> CustomerSelectList = new List<SelectListItem>()
+                                                                                                                            {
+                                                                                                                                new SelectListItem{ Text="Select" ,Value="0"}
+                                                                                                                            };
+
+                                }
+                                @Html.DropDownList("CID", CustomerSelectList, new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2">
+
+                                <button id="Search" class="btn btn-secondary" style="margin-top:15%"><i class="fa fa-search"></i> Search</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col" id="HUBOrderList">
+
+
+            </div>
+
+            <script>
+    $("#Search").click(function () {
+                    $("#waiting").show();
+                    var CID = $("#CID").val();
+        var HID = $("#HID").val();
+                    var Ordertype = $("#Ordertype").val();
+                    $.ajax({
+                        type: 'GET',
+                        data: { CID: CID, HID: HID,Ordertype: Ordertype},
+                        url: "/Order/HubWiseOrderStatusReportFilter?Status=2",
+                        success: function (data) {
+                            $('#HUBOrderList2').html('');
+                            $("#HUBOrderList").html(data);
+                            $("#waiting").hide();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback
+                            $("#waiting").hide();
+                        }
+                    });
+
+                });
+    $("#HID").click(function () {
+        HubSearch();
+    });
+                function HubSearch() {
+        $("#HID").select2({
+            ajax: {
+                url: "/Route/LiveSearch",
+                dataType: 'json',
+                delay: 2000,
+                data: function (params) {
+                    return {
+                        pageSize: 20,
+                        pageNum: params.page || 1,
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Results,
+                        pagination: {
+                            more: (params.page * 20) < data.Total
+                        }
+                    };
+                },
+                cache: true
+            },
+            //escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 0,
+            allowClear: true,
+            placeholder: "Select Route Name",
+            tags: false,
+            tokenSeparators: [','],
+            dropdownAutoWidth: true
+            //templateResult: formatRepo,
+            //templateSelection: formatRepoSelection
+        }).on("select2:focus", function (e) {
+            $(this).select2('open');
+        });
+        $("#HID").select2('open');
+    }
+    function CustomerSearch() {
+        $("#CID").select2({
+            ajax: {
+                url: "/Customer/LiveSearch",
+                dataType: 'json',
+                delay: 200,
+                data: function (params) {
+                    return {
+                        pageSize: 20,
+                        pageNum: params.page || 1,
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Results,
+                        pagination: {
+                            more: (params.page * 20) < data.Total
+                        }
+                    };
+                },
+                cache: true
+            },
+            //escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 0,
+            allowClear: true,
+            placeholder: "Select Customer Name ",
+            tags: false,
+            tokenSeparators: [','],
+            dropdownAutoWidth: true
+            //templateResult: formatRepo,
+            //templateSelection: formatRepoSelection
+        }).on("select2:focus", function (e) {
+            $(this).select2('open');
+        });
+        $("#CID").select2('open');
+    }
+    $("#CID").click(function () {
+        CustomerSearch();
+    });
+                function OrderInfo(OrderId) {
+                    $("#waiting").show();
+                    $.ajax({
+
+                        type: 'GET',
+                        url: "/OrderItem/Index?OrderId=" + OrderId,
+                        success: function (data) {
+                            // $("#myModal .modal-body").html(data);
+                            // $("#myModal").modal();
+                            // alert(data);
+                            //makedpt("OrderItem");
+                            $("#myModal2 .modal-body").html(data);
+                            $("#myModal2").modal();
+                            //  $("#OrderItem > .modal-dialog > .modal-content > .modal-body").html(data);
+                            //  showdpt("OrderItem");
+
+                            $("#waiting").hide();
+
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                            $("#waiting").hide();
+                        }
+                    });
+
+                }
+            </script>
+            break;
+    }
+}
+
+            <div class="col" id="HUBOrderList2">
+                <div class="card">
+                    <div class="card-header">Hub Wise Order </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 col-xs-12 "  style="background-color:aqua">
+                                <div class="" style="margin:10px" >
+                                    <p> <strong> Total Orders : @orders.Count.ToString() </strong> </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-12" style="background-color:springgreen">
+                                <div id="" style="margin:10px">
+                                    <p> <strong> Order Ready To Deliver In Hubs : @AssemlbeCount.ToString() </strong> </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-12"style="background-color:darkorange;">
+                                <div id="" style="margin:10px" >
+                                    <p> <strong> Pending Orders (Not Assemble) : @NotAssemble.ToString() </strong> </p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <table class="table table-hover table-bordered text-center" id="TBLID">
+                            <thead>
+                                <tr>
+                                    <th>Hub Code </th>
+                                    <th>Hub Name </th>
+                                    <th>Order Date</th>
+                                    <th>Customer Name </th>
+                                    <th>Status</th>
+                                    <th>No Of Item Assemble</th>
+                                    <th>TiFin No</th>
+                                    <th>View Order Items</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in orders)
+                                {
+                                    var ListOredeItems = ListOfOrderItem.FindAll(x => x.OID == item.OID);
+                                    int TotalCollected = ListOredeItems.FindAll(x => x.Status == 2).Count;
+                                    int TotalAssembleItem = ListOredeItems.FindAll(x => x.Status == 2 && x.TifinID > 0).Count;
+                                    string TifinNumber = item.TifinIds;
+                                    string TrbackGorundColor = "style=background-color:springgreen;";
+                                    if (item.Status != "Order-Assemble")
+                                    {
+                                        TrbackGorundColor = "style=background-color:darkorange;";
+                                    }
+
+                                <tr @(TrbackGorundColor)>
+                                    @{
+                                        string HubName = " ";
+                                        string hubCode = "";
+                                        Routes Objhub = HubList.Find(x => x.HubID == item.HubId);
+                                        if (Objhub != null)
+                                        {
+                                            HubName = Objhub.HubName;
+                                            hubCode = Objhub.HubCode;
+                                        }
+
+                                    }
+                                    <td>
+                                        @HubName
+                                    </td>
+                                    <td>@hubCode</td>
+                                    <td>@item.Create_Date.ToString("dd-MM-yyyy")</td>
+                                    <td>
+                                        @{ Customer ObjCus = Customer.List.Find(x => x.CID == item.CID);}
+                                        @ObjCus.Name
+                                    </td>
+                                        <td >
+                                            @item.Status
+                                        </td>
+                                    <td>
+                                        @TotalAssembleItem.ToString()
+                                    </td>
+                                    <td>
+                                        @TifinNumber
+                                    </td>
+                                    <td>
+                                        @{
+                                            string Design = "<button type='button' class='btn btn-info' onclick='OrderInfo(" + item.OID + ")' >Total " + ListOredeItems.Count + " </button>";
+                                            @Html.Raw(Design);
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
+

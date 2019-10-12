@@ -1,0 +1,58 @@
+﻿@using FOODDO.Models;
+@using FOODDO.Models.COMMON;
+@using Newtonsoft.Json;
+@{
+    Layout = null;
+}
+@{
+
+    string searchTerm = Request.QueryString["searchTerm"];
+    int pageSize = int.Parse(Request.QueryString["pageSize"].ToString());
+    int pageNum = int.Parse(Request.QueryString["pageNum"]);
+    int MessId = int.Parse(Request.QueryString["MessId"]);
+    List<Food> FoodList = Food.List.FindAll(x=>x.MID==MessId);
+    if (searchTerm != null && searchTerm != "")
+    {
+        FoodList = FoodList.FindAll(x => x.Food_Name.ToUpper().Contains(searchTerm.ToUpper()));
+    }
+
+    var Cnt = FoodList.Count;
+    if (FoodList != null)
+    {
+        if (FoodList.Count > pageSize * (pageNum - 1) & FoodList.Count < (pageSize * (pageNum - 1) + pageSize))
+        {
+            FoodList = FoodList.GetRange(pageSize * (pageNum - 1), FoodList.Count - pageSize * (pageNum - 1));
+
+        }
+        else if (FoodList.Count >= (pageSize * (pageNum - 1) + pageSize))
+        {
+            FoodList = FoodList.GetRange(pageSize * (pageNum - 1), pageSize);
+
+        }
+        else if (FoodList.Count < pageSize * (pageNum - 1))
+        {
+            FoodList = null;
+        }
+
+    }
+
+    Select2PagedResult jsonAttendees = new Select2PagedResult();
+    jsonAttendees.Results = new List<Select2Result>();
+    if (FoodList != null)
+    {
+        foreach (var obj in FoodList)
+        {
+            Select2Result ObjRESULT = new Select2Result();
+            ObjRESULT.id = obj.FID.ToString();
+            ObjRESULT.text = obj.Food_Name;
+            jsonAttendees.Results.Add(ObjRESULT);
+            // data will return in the combination of Company name and its ISIN number(eg. 'NAME - MOBILE')
+            jsonAttendees.Total = Cnt;
+        }
+    }
+
+    var JsonResult = JsonConvert.SerializeObject(jsonAttendees);
+    @(new HtmlString(JsonResult));
+
+}
+

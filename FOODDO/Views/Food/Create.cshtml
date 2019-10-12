@@ -1,0 +1,146 @@
+﻿@model FOODDO.Models.Food
+@using FOODDO.Models;
+@{ Layout = null;}
+
+<div class="card h-100">
+    <div class="card-header bg-secondary" style="color:#ffdb00"><i class="fa fa-edit"></i> Food </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @using (Ajax.BeginForm("Create", "Food", new { FID = Model.FID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnSuccess = "OnSuccess" }))
+                {
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col text-center">
+                                @if (@Model.FID > 0)
+                                {
+
+                                    <img id="DemoUser" src="@Model.Food_Image" width="110" height="110" class="mb-4" /><br />
+                                    <input type="file" id="FoodImg" name="FoodImg" value="@Model.Food_Image" accept="image/jpeg" onChange="document.getElementById('DemoUser').src = window.URL.createObjectURL(this.files[0])" />
+                                }
+                                else
+                                {
+                                    <img id="DemoUser" src="~/WebsiteImg/FoodIcon.png" width="110" height="110" class="mb-4" /><br />
+                                    <input type="file" id="FoodImg" name="FoodImg" value="" required accept="image/jpeg" onChange="document.getElementById('DemoUser').src = window.URL.createObjectURL(this.files[0])" />
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row pt-4">
+                        <div class="col-md-3">
+                            @Html.HiddenFor(Model => Model.Rating)
+                            @Html.Label("Mess")
+                            @{List<Mess> ListMyMess = Mess.List;
+                                if (Model.MID > 0)
+                                {
+                                    ListMyMess = ListMyMess.FindAll(x => x.MID == Model.MID);
+                                }
+
+                            }@*//.FindAll(x => x.Create_By == System.Convert.ToInt32(Session["UID"]));}*@
+                            @Html.DropDownListFor(Model => Model.MID, new SelectList(ListMyMess, "MID", "Mess_Name", Model.MID), new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Food Name")
+                            @Html.EditorFor(Model => Model.Food_Name, new { htmlAttributes = new { @class = "form-control OnlyChar", @placeholder = "Food Name", required = "required" } })
+                            @Html.HiddenFor(Model => Model.FID)
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.CostPrice)
+                            @Html.EditorFor(Model => Model.CostPrice, new { htmlAttributes = new { @class = "form-control autodouble  ", @placeholder = "Cost Price", required = "required" } })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Selling Price")
+                            @Html.EditorFor(Model => Model.Price, new { htmlAttributes = new { @class = "form-control autodouble  ",@readonly= "readonly", @placeholder = "Selling Price", required = "required" } })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.Qty)
+                            @Html.EditorFor(Model => Model.Qty, new { htmlAttributes = new { @class = "form-control ", @placeholder = "QTY", required = "required" } })
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-md-3">
+                            @Html.Label("Category")
+                            @{SelectList SLCagegory = new SelectList(Category.List, "Category_ID", "Name", Model.Category_ID);}
+                            @Html.DropDownListFor(Model => Model.Category_ID, SLCagegory, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-7">
+                            @Html.LabelFor(Model => Model.Description)
+                            @Html.EditorFor(Model => Model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Description", required = "required" } })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.FoodType)
+                            @{
+                                List<SelectListItem> FoodType = new List<SelectListItem>()
+                                                        {
+                                                            new SelectListItem{Text="VEG",Value="VEG"},
+                                                            new SelectListItem{Text="NON-VEG",Value="NON-VEG"},
+
+                                                        };
+                            }
+                            @Html.DropDownListFor(Model => Model.FoodType, FoodType, new { @class = "form-control", @placeholder = "Description", required = "required" })
+                        </div>
+
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.MealsType)
+                            @{
+                                List<SelectListItem> MealType = new List<SelectListItem>()
+                                                        {
+                                                            new SelectListItem{Text="All",Value="All"},
+                                                            new SelectListItem{Text="Breakfast",Value="Breakfast"},
+                                                            new SelectListItem{Text="Lunch",Value="Lunch"},
+                                                            new SelectListItem{Text="Dinner",Value="Dinner"},
+                                                        };
+                            }
+                            @Html.DropDownListFor(Model => Model.MealsType, MealType, new { @class = "form-control", @placeholder = "Description", required = "required" })
+                        </div>
+                        <div class="col-sm-1">
+                            @Html.LabelFor(Model => Model.Status, new { @class = "ml-4" })
+                            @Html.EditorFor(Model => Model.Status, new { htmlAttributes = new { type = "checkbox", @class = "form-control" } })
+                        </div>
+                        <div class="col-sm-1">
+                            @Html.Label("savebutton", new { @class = "text-white" })
+                            <button type="submit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#CostPrice").change(function () {
+        $("#waiting").show();
+        var CostPrice =parseFloat($("#CostPrice").val());
+        var SellPrice = $("#Price").val();
+        $.ajax({
+            type: 'GET',
+            data: { CostPrice: CostPrice},
+            url: "/Settings/GetKeyValue?id=MarginPrice",
+            success: function (data) {
+                //$("#OrderList").html(data);
+                var SellPricevalue = parseFloat(data);
+               // alert(SellPricevalue);
+                if (SellPricevalue !== null && SellPricevalue !== undefined) {
+                    var GetSellPrice = CostPrice + (SellPricevalue / 100) * CostPrice;
+                    $("#Price").val(parseFloat(GetSellPrice));
+                }
+                else {
+                    $("#Price").val(CostPrice);
+                }
+                $("#waiting").hide();
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback
+                $("#waiting").hide();
+            }
+        });
+
+    });
+
+
+</script>
+ 
