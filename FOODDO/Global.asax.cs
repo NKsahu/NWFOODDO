@@ -34,6 +34,7 @@ namespace FOODDO
             //OrderItemCollection.List = new OrderItemCollection().GetAll();
             Settings.List = new Settings().GetAll();
             Menu.List = new Menu().GetAll();
+            Offers.List = new Offers().GetAll();
             //========== End Load RAM ============= 
         }
         void Application_BeginRequest(object sender, System.EventArgs e)
