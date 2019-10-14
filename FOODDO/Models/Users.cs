@@ -13,7 +13,6 @@ namespace FOODDO.Models
         public System.Int32 MESSID { get; set; }// mess id for filter oreder according to user
         public bool Deleted { get; set; }
         public static System.Collections.Generic.List<Users> List { get; set; }
-
         public Users()
         {
             this.User_Name = "";
