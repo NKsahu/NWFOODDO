@@ -1,0 +1,43 @@
+﻿@model IEnumerable<FOODDO.Models.COMMON.Offers>
+@{ Layout = null;}
+<div class="card">
+    <div class="card-header">
+        Offers
+        <span class="float-right">
+            <span class="float-right">
+                <a href="/Offer/Create?ID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.Title)</td>
+                        <td>@Html.DisplayNameFor(model => model.Discription)</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.Discription)
+                        </td>
+                        <td>
+                            <a href="/Offer/Create?ID=@item.TitileId.ToString()" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\OfferController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
@@ -258,6 +259,8 @@
     <Content Include="Views\Ledger\ShortInfo.cshtml" />
     <Content Include="Views\Reports\DailyReport.cshtml" />
     <Content Include="Views\OrderItemCollection\AlloteTifin.cshtml" />
+    <Content Include="Views\Offer\Index.cshtml" />
+    <Content Include="Views\Offer\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
