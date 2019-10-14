@@ -19,12 +19,35 @@
                         @Html.TextAreaFor(model => model.Discription, new { @class = "form-control" })
 
                     </div>
-                    <div class="col-sm-1">
-                        @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+                   </div>
+                        <div class="card-header bg-primary" style="color:#ffdb00">
+                            OFFER IF APPLY
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.FromAmount)
+                                @Html.TextBoxFor(model => model.FromAmount, new { @class = "form-control  autodouble" })
 
-                        <button type="submit" class="btn btn-secondary">Save</button>
-                    </div>
-                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.ToAmount)
+                                @Html.TextBoxFor(model => model.ToAmount, new { @class = "form-control  autodouble" })
+
+                            </div>
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.Bonus)
+                                @Html.TextBoxFor(model => model.Bonus, new { @class = "form-control  autodouble", @value = "0.00" })
+
+                            </div>
+                            <div class="col-sm-1">
+                                @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+
+                                <button type="submit" class="btn btn-secondary">Save</button>
+                            </div>
+
+                        </div>
+                      
                 }
             </div>
         </div>

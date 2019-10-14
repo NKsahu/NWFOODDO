@@ -184,6 +184,7 @@
     <Compile Include="Models\Food.cs" />
     <Compile Include="Models\FoodDoApi.cs" />
     <Compile Include="Models\FooddoModels\CollectOrder.cs" />
+    <Compile Include="Models\FooddoModels\Offers.cs" />
     <Compile Include="Models\FoodReview.cs" />
     <Compile Include="Models\IFOOD.cs" />
     <Compile Include="Models\IIFOOD.cs" />

@@ -16,6 +16,9 @@
                     <tr>
                         <td>@Html.DisplayNameFor(model => model.Title)</td>
                         <td>@Html.DisplayNameFor(model => model.Discription)</td>
+                        <td>@Html.DisplayNameFor(model=>model.FromAmount)</td>
+                        <td>@Html.DisplayNameFor(model=>model.ToAmount)</td>
+                        <td>@Html.DisplayNameFor(model=>model.Bonus)</td>
                         <td></td>
                     </tr>
                 </thead>
@@ -28,6 +31,15 @@
                         </td>
                         <td>
                             @Html.DisplayFor(model => item.Discription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.FromAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.ToAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.Bonus)
                         </td>
                         <td>
                             <a href="/Offer/Create?ID=@item.TitileId.ToString()" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>
