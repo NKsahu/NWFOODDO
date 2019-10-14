@@ -8,6 +8,7 @@
                 @using (Ajax.BeginForm("CreatePost", "Offer", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnBegin = "CreateTifin" }, new { enctype = "multipart/form-data" }))
                 {
                 <div class="row">
+                    @Html.HiddenFor(model => model.TitileId)
                     <div class="col-md-3">
                         @Html.LabelFor(model => model.Title)
                         @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })

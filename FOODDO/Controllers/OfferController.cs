@@ -25,6 +25,7 @@ namespace FOODDO.Controllers
             }
             return View(Obj);
         }
+        [HttpPost]
         public ActionResult CreatePost(Offers offers)
         {
             if(offers.Title==null || offers.Title.Replace(" ", "").Equals(""))

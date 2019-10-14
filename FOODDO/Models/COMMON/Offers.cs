@@ -24,7 +24,7 @@ namespace FOODDO.Models.COMMON
                     cmd = new System.Data.SqlClient.SqlCommand("UPDATE Offer SET Title=@Title,description=@description where OfferID=@OfferID", Obj.Con);
                     cmd.Parameters.AddWithValue("@OfferID", this.TitileId);
                 }
-                cmd.Parameters.AddWithValue("@Title", this.TitileId);
+                cmd.Parameters.AddWithValue("@Title", this.Title);
                 cmd.Parameters.AddWithValue("@description", this.Discription);
                 
                
