@@ -9,7 +9,7 @@ namespace FOODDO.Controllers
 {
     public class OfferController : Controller
     {
-        // GET: Offer
+       
         public ActionResult Index()
         {
             List<Offers> OfferList = Offers.List;
