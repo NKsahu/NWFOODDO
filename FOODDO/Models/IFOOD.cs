@@ -95,6 +95,8 @@ namespace FOODDO.Models
 
        CollectOrder PostCollectionItem(int OIID, int ElementCode);
         List<Routes> HubList();
+        List<QRInfo> CusQrInfo(int CustId);
+
     }
 
 }

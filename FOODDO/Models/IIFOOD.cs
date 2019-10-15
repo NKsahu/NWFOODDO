@@ -833,7 +833,27 @@ namespace FOODDO.Models
                 }
             return CollOrdObj;
         }
+        public List<QRInfo> CusQrInfo(int CustId)
+        {
+            List<Routes> HubList = new Routes().RouteList();
+            List<QRInfo> CusQrInfoTemp = new List<QRInfo>();
+            List<Orders> CustOrderList = Orders.List.FindAll(x => x.CID == CustId);
+            for(int i = 0; i < CustOrderList.Count; i++)
+            {
+                QRInfo TempObj = new QRInfo();
+                TempObj.CustID = CustOrderList[i].CID;
+                TempObj.OrderID = CustOrderList[i].OID;
+                TempObj.TifinCodes = CustOrderList[i].TifinIds;
+                TempObj.OrderType = CustOrderList[i].Type;
+                Routes ObjHub = HubList.Find(x => x.HubID == CustOrderList[i].HubId);
+                if (ObjHub != null)
+                {
+                    TempObj.HubName = ObjHub.HubName+"( " + ObjHub.MobileNo.ToString() + " )";
+                }
+                CusQrInfoTemp.Add(TempObj);
+            }
+            return CusQrInfoTemp;
+        }
 
-        
     }
 }
