@@ -539,17 +539,29 @@ namespace FOODDO.Models
             int RN5 = FoodReview.List.FindAll(x => x.FID == FOODID && x.Rating == 5).Count();
 
             Food ObjFood = Food.List.Find(x => x.FID == FOODID);
-            int RN1_1 = -RN1;
-            int RN2_1 = -2 * (RN2);
-            int RN4_1 = RN4;
-            int RN5_1 = 2 * RN5;
-            ObjFood.Rating = (System.Convert.ToDouble((RN1_1 + RN2_1 + RN4_1 + RN5_1) / (RN1 + RN2 + RN3 + RN4 + RN5))).ToString();
+            double FoodRating= (RN1 + RN2 + RN3 + RN4 + RN5) / 5;
+            ObjFood.Rating = FoodRating.ToString("0.00");
+            //int RN1_1 = -RN1;
+            //int RN2_1 = -2 * (RN2);
+            //int RN4_1 = RN4;
+            //int RN5_1 = 2 * RN5;
+           /// ObjFood.Rating = (System.Convert.ToDouble((RN1_1 + RN2_1 + RN4_1 + RN5_1) / (RN1 + RN2 + RN3 + RN4 + RN5))).ToString();
             if (ObjFood.Save() != 0)
                 return "YES";
             return "ERROR IN RATING";
 
         }
 
+        // Show Hide Rating if Customer not Eat Food
+       public string ShowHideRating(int Fid, int CustID)
+        {
+            List<Orders> OrderList = Orders.List.FindAll(x => x.CID == CustID && x.Status == "Order-Completed");
+            HashSet<System.Int64> OID = new HashSet<System.Int64>(OrderList.Select(x=>x.OID).ToArray());
+            OrderItem Obj=OrderItem.List.Find(x=>OID.Contains(x.OID) &&x.FID==Fid);
+            if (Obj != null) return "YES";
+            else
+                return "NO";
+        }
         // Item details
         public List<App_Review> GetReview(string FID)
         {

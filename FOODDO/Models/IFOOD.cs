@@ -61,7 +61,8 @@ namespace FOODDO.Models
 
         // Item details
         List<App_Review> GetReview(string FID);
-
+        // Show Hide Rating if Customer not Eat Food
+        string ShowHideRating(int Fid, int CustID);
         //Customer Gmail Login
         string GmailLogin_Customer(string Name, string Gmail);
 
