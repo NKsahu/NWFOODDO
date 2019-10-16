@@ -563,26 +563,18 @@ namespace FOODDO.Models
                 return "NO";
         }
         // Item details
-        public List<App_Review> GetReview(string FID)
+        public App_Review GetReview(string FID, int CID)
         {
+            
             List<FoodReview> ListFoodReview = FoodReview.List.FindAll(x => x.FID == System.Convert.ToInt64(FID));
-            List<App_Review> ListComt = new List<App_Review>();
-            foreach (FoodReview Obj in ListFoodReview)
-            {
-                Customer ObjCus = Customer.List.Find(x => x.CID == Obj.CID);
-                FoodReview ObjFoodReview = ListFoodReview.Find(x => x.CID == Obj.CID);
-                App_Review ObjComt = new App_Review()
-                {
-                    Rating = ObjFoodReview.Rating.ToString(),
-                    Time = Obj.Date_Time.ToString("dd-MM-yyyy hh:MM tt"),
-                    CustomerName = ObjCus.Name,
-                    Comment = ObjFoodReview.Comment
-                };
-                ListComt.Add(ObjComt);
-            }
-            return ListComt;
+            FoodReview OwnRatingObj = ListFoodReview.Find(x => x.CID == CID);
+            App_Review App_Review = new App_Review();
+            App_Review.NumberOfRatingCount = ListFoodReview.Count;
+            App_Review.Rating = ListFoodReview.Sum(x => x.Rating) / 5;
+            App_Review.OwnRating = (OwnRatingObj != null) ? OwnRatingObj.Rating : 0;
+            App_Review.NoOfOrderCount = OrderItem.List.FindAll(x => x.FID == System.Convert.ToInt64(FID)).Count;
+            return App_Review;
         }
-
         //Customer Gmail Login
         public string GmailLogin_Customer(string Name, string Gmail)
         {
@@ -843,8 +835,10 @@ namespace FOODDO.Models
                 QRInfo TempObj = new QRInfo();
                 TempObj.CustID = CustOrderList[i].CID;
                 TempObj.OrderID = CustOrderList[i].OID;
-                TempObj.TifinCodes = CustOrderList[i].TifinIds;
+                var tifinno = Regex.Split(CustOrderList[i].TifinIds, ",").Where(x => x != string.Empty).ToArray();
+                TempObj.TifinCodes = string.Join(",", tifinno);
                 TempObj.OrderType = CustOrderList[i].Type;
+                TempObj.HubName = "";
                 Routes ObjHub = HubList.Find(x => x.HubID == CustOrderList[i].HubId);
                 if (ObjHub != null)
                 {

@@ -60,7 +60,7 @@ namespace FOODDO.Models
         string PostReview(string FID, string CID, string Rating, string comment="");
 
         // Item details
-        List<App_Review> GetReview(string FID);
+        App_Review GetReview(string FID,int CID);
         // Show Hide Rating if Customer not Eat Food
         string ShowHideRating(int Fid, int CustID);
         //Customer Gmail Login
