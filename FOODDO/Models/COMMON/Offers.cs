@@ -71,9 +71,9 @@ namespace FOODDO.Models.COMMON
                     ObjTmp.TitileId = System.Int32.Parse(SDR["OfferID"].ToString());
                     ObjTmp.Title = SDR["Title"].ToString();
                     ObjTmp.Discription = SDR["description"].ToString();
-                    ObjTmp.FromAmount = int.Parse(SDR["FromAmount"].ToString());
-                    ObjTmp.ToAmount = int.Parse(SDR["ToAmount"].ToString());
-                    ObjTmp.Bonus = int.Parse(SDR["Bonus"].ToString());
+                    ObjTmp.FromAmount = double.Parse(SDR["FromAmount"].ToString());
+                    ObjTmp.ToAmount = double.Parse(SDR["ToAmount"].ToString());
+                    ObjTmp.Bonus = double.Parse(SDR["Bonus"].ToString());
                     ListTmp.Add(ObjTmp);
                 }
             }

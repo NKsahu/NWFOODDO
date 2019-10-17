@@ -84,19 +84,21 @@
                             @Html.DropDownListFor(Model => Model.FoodType, FoodType, new { @class = "form-control", @placeholder = "Description", required = "required" })
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-5">
                             @Html.LabelFor(Model => Model.MealsType)
                             @{
                                 List<SelectListItem> MealType = new List<SelectListItem>()
                                                         {
-                                                            new SelectListItem{Text="All",Value="All"},
                                                             new SelectListItem{Text="Breakfast",Value="Breakfast"},
                                                             new SelectListItem{Text="Lunch",Value="Lunch"},
                                                             new SelectListItem{Text="Dinner",Value="Dinner"},
                                                         };
                             }
-                            @Html.DropDownListFor(Model => Model.MealsType, MealType, new { @class = "form-control", @placeholder = "Description", required = "required" })
+                            @Html.ListBoxFor(Model => Model.MealTypeMultiSelect, MealType, new {@multiple="multiple",@name= "MealTypeMultiSelect[]", @class = "form-control", @placeholder = "Select Meals Type", required = "required" })
                         </div>
+                        <script>
+                            $("#MealTypeMultiSelect").select2();
+                        </script>
                         <div class="col-sm-1">
                             @Html.LabelFor(Model => Model.Status, new { @class = "ml-4" })
                             @Html.EditorFor(Model => Model.Status, new { htmlAttributes = new { type = "checkbox", @class = "form-control" } })

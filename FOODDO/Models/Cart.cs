@@ -6,6 +6,7 @@ namespace FOODDO.Models
         public System.Int64 FID { get; set; }
         public int Count { get; set; }
         public System.Int64 MessID { get; set; }
+        public string MealType { get; set; }
         public static System.Collections.Generic.List<Cart> List { get; set; }
         
 

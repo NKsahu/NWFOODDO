@@ -21,6 +21,7 @@ namespace FOODDO.Models
         public string FoodType { get; set; }
         public int AdminAprovalStatus { get; set; }// when food is created by mess ids
         public string MealsType { get; set; }
+        public string[] MealTypeMultiSelect { get; set; }
         public static System.Collections.Generic.List<Food> List { get; set; }
         public Food()
         {
@@ -125,7 +126,7 @@ namespace FOODDO.Models
                         FoodType=SDR.IsDBNull(15)?"":SDR.GetString(15),
                         CostPrice=SDR.IsDBNull(16)?SDR.GetDouble(3):SDR.GetDouble(16),
                         AdminAprovalStatus=SDR.IsDBNull(17)?1:SDR.GetInt32(17),
-                        MealsType=SDR.IsDBNull(18)?"All":SDR.GetString(18)
+                        MealsType=SDR.IsDBNull(18)?"Lunch,":SDR.GetString(18)
                         
                     };
                     ListTmp.Add(ObjTmp);

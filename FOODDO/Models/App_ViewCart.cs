@@ -10,6 +10,7 @@
         public string Price { get; set; }
         public string Qty { get; set; }
         public string Count { get; set; }
+        public string MealsType { get; set; }
     }
     public class ViewCartItems
     {

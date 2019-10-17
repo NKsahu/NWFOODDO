@@ -11,6 +11,7 @@ namespace FOODDO.Models
         public System.DateTime Signup_Date { get; set; }
         public System.DateTime Update_Date { get; set; }
         public bool Deleted { get; set; }
+        public int CustomerType { get; set; } // {"1":"NON-PREMIOUM","2":"PREMIUM"}
         public static System.Collections.Generic.List<Customer> List { get; set; }
 
         public Customer()
@@ -31,13 +32,12 @@ namespace FOODDO.Models
             try
             {
                 if (this.CID == 0)
-                    cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO CUSTOMER (Name,Birthday,Email,Mobile,Password,Signup_Date,Update_Date,Deleted) VALUES (@Name,@Birthday,@Email,@Mobile,@Password,@Signup_Date,@Update_Date,@Deleted);select SCOPE_IDENTITY();", Obj.Con);
+                    cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO CUSTOMER (Name,Birthday,Email,Mobile,Password,Signup_Date,Update_Date,Deleted,CustomerType) VALUES (@Name,@Birthday,@Email,@Mobile,@Password,@Signup_Date,@Update_Date,@Deleted,@CustomerType);select SCOPE_IDENTITY();", Obj.Con);
                 else
                 {
-                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE CUSTOMER SET Name=@Name,Birthday=@Birthday,Email=@Email,Mobile=@Mobile,Password=@Password,Signup_Date=@Signup_Date,Update_Date=@Update_Date,Deleted=@Deleted where CID=@CID", Obj.Con);
+                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE CUSTOMER SET Name=@Name,Birthday=@Birthday,Email=@Email,Mobile=@Mobile,Password=@Password,Signup_Date=@Signup_Date,Update_Date=@Update_Date,Deleted=@Deleted,CustomerType=@CustomerType where CID=@CID", Obj.Con);
                     cmd.Parameters.AddWithValue("@CID", this.CID);
                 }
-
                 cmd.Parameters.AddWithValue("@Name", this.Name);
                 cmd.Parameters.AddWithValue("@Birthday", this.Birthday);
                 cmd.Parameters.AddWithValue("@Email", this.Email);
@@ -46,6 +46,15 @@ namespace FOODDO.Models
                 cmd.Parameters.AddWithValue("@Signup_Date", this.Signup_Date);
                 cmd.Parameters.AddWithValue("@Update_Date", System.DateTime.Now);
                 cmd.Parameters.AddWithValue("@Deleted", this.Deleted);
+                if (this.CustomerType == 0)
+                {
+                    cmd.Parameters.AddWithValue("@CustomerType",1);
+                    this.CustomerType = 1;
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@CustomerType", this.CustomerType);
+                }
                 if (this.CID == 0)
                 {
                     this.CID = System.Convert.ToInt64(cmd.ExecuteScalar());
@@ -91,6 +100,7 @@ namespace FOODDO.Models
                         Password = SDR.GetString(5),
                         Signup_Date = SDR.GetDateTime(6),
                         Update_Date = SDR.GetDateTime(7),
+                        CustomerType=SDR.IsDBNull(9)?1:SDR.GetInt32(9)
                     };
                     ListTmp.Add(ObjTmp);
                 }

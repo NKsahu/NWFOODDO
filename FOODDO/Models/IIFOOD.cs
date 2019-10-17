@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using FOODDO.Models.FooddoModels;
+using FOODDO.Models.COMMON;
 namespace FOODDO.Models
 {
     public class IIFOOD
@@ -187,7 +188,7 @@ namespace FOODDO.Models
             }
            else if (!FoodType.Equals(""))
             {
-                ListFood = ListFood.FindAll(x => x.FoodType == FoodType);
+                ListFood = ListFood.FindAll(x => x.FoodType.Contains(FoodType));
             }
             else if (!MealsType.Equals(""))
             {
@@ -209,7 +210,7 @@ namespace FOODDO.Models
                 TmpObj.ItemDescription = ObjFood.Description;
                 TmpObj.Rating = ObjFood.Rating;
                 TmpObj.FoodType = ObjFood.FoodType;
-                TmpObj.MealsType = ObjFood.MealsType;
+                TmpObj.MealsType = MealsType;
                 Cart ObjCart = ListCart.Find(x => x.FID == ObjFood.FID);
                 if (ObjCart != null)
                 {
@@ -249,7 +250,7 @@ namespace FOODDO.Models
         }
 
         // Add item in Cart
-        public string AddCart(string CID, string FID, string Cnt,string MessID)
+        public string AddCart(string CID, string FID, string Cnt,string MessID,string MealType="")
         {
             System.Int64 CusID = System.Convert.ToInt64(CID);
             System.Int64 FoodID = System.Convert.ToInt64(FID);
@@ -263,7 +264,7 @@ namespace FOODDO.Models
                     Cart.List.Add(ObjCart);
             }
             else
-                Cart.List.Add(new Cart() { CID = CusID, FID = FoodID, Count = System.Convert.ToInt32(Cnt),MessID=Mess_ID });
+                Cart.List.Add(new Cart() { CID = CusID, FID = FoodID, Count = System.Convert.ToInt32(Cnt),MessID=Mess_ID,MealType=MealType });
 
             double Amt = 0;
             int Count = 0;
@@ -303,7 +304,9 @@ namespace FOODDO.Models
                 Objpp_ViewCarts.Price = ObjFood.Price.ToString();
                 Objpp_ViewCarts.Qty = ObjFood.Qty;
                 Objpp_ViewCarts.Count = Obj.Count.ToString();
+                Objpp_ViewCarts.MealsType = Obj.MealType;
                 TotalPrice += Obj.Count * ObjFood.Price;
+                
                 ListApp_ViewCarts.Add(Objpp_ViewCarts);
             }
             ObjCartItem.TotalPrice = TotalPrice.ToString();
@@ -565,7 +568,6 @@ namespace FOODDO.Models
         // Item details
         public App_Review GetReview(string FID, int CID)
         {
-            
             List<FoodReview> ListFoodReview = FoodReview.List.FindAll(x => x.FID == System.Convert.ToInt64(FID));
             FoodReview OwnRatingObj = ListFoodReview.Find(x => x.CID == CID);
             App_Review App_Review = new App_Review();
@@ -847,6 +849,37 @@ namespace FOODDO.Models
                 CusQrInfoTemp.Add(TempObj);
             }
             return CusQrInfoTemp;
+        }
+        public List<WalletOffer> WalletOffers()
+        {
+            List<WalletOffer> walletOffersList = new List<WalletOffer>();
+            //List<Offers> WithouCashBack=Offers.List.fin
+            WalletOffer CashBackOffer = new WalletOffer();
+            CashBackOffer.OfferTitle = "CASHBACK";
+            CashBackOffer.Discription = "";
+            List<WalletOffer.CashBacktemList> cashbackList = new List<WalletOffer.CashBacktemList>();
+            foreach (var offerobj in COMMON.Offers.List)
+            {
+                if (offerobj.Title.Equals("cashback",System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    WalletOffer.CashBacktemList cashback= new WalletOffer.CashBacktemList();
+                    cashback.FromAmt = offerobj.FromAmount;
+                    cashback.ToAmt = offerobj.ToAmount;
+                    cashback.BonusAmt = offerobj.Bonus;
+                    cashbackList.Add(cashback);
+                }
+                else
+                {
+                    WalletOffer walletOffer = new WalletOffer();
+                    walletOffer.OfferTitle = offerobj.Title;
+                    walletOffer.Discription = offerobj.Discription;
+                    walletOffer.CashBackList = null;
+                    walletOffersList.Add(walletOffer);
+                }
+            }
+            CashBackOffer.CashBackList = cashbackList.OrderBy(X=>X.FromAmt).ToList();
+            walletOffersList.Add(CashBackOffer);
+            return walletOffersList;
         }
 
     }

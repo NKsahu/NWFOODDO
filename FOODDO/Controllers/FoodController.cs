@@ -23,7 +23,15 @@ namespace FOODDO.Controllers
         {
             Food ObjFood = new Food();
             if (FID > 0)
-                ObjFood=Food.List.Find(x => x.FID == FID);
+            {
+                ObjFood = Food.List.Find(x => x.FID == FID);
+                if ((ObjFood.MealTypeMultiSelect == null || ObjFood.MealTypeMultiSelect.Length == 0 )&& ObjFood.MealsType.Contains(","))
+                {
+                    ObjFood.MealTypeMultiSelect = ObjFood.MealsType.Split(',');
+                }
+            }
+              
+            
             return View(ObjFood);
         }
 
@@ -39,6 +47,12 @@ namespace FOODDO.Controllers
             {
                 ObjFood.AdminAprovalStatus = 0;
             }
+            if (ObjFood.MealTypeMultiSelect.Length == 0)
+            {
+                return Json(new { msg = "Please Select Meal Type" });
+            }
+            ObjFood.MealsType = string.Join(",", ObjFood.MealTypeMultiSelect);
+            ObjFood.MealTypeMultiSelect = null;
             if (ObjFood.Save() < 1)
                 return Json(new { msg = "Error in Update Mess" });
             else if (FoodImg != null)
