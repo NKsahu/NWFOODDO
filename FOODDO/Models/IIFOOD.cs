@@ -182,17 +182,17 @@ namespace FOODDO.Models
             {
                 ListFood = ListFood.FindAll(x => x.Food_Name.ToLower().Contains(SearchTerm.ToLower()));
             }
-            else if (!CID.Equals(""))
+            if (!CID.Equals(""))
             {
                 ListFood = ListFood.FindAll(x => x.Category_ID.ToString() == CID);
             }
-           else if (!FoodType.Equals(""))
+            if (!FoodType.Equals(""))
             {
                 ListFood = ListFood.FindAll(x => x.FoodType.Contains(FoodType));
             }
-            else if (!MealsType.Equals(""))
+             if (!MealsType.Equals(""))
             {
-                ListFood = ListFood.FindAll(x => x.MealsType == MealsType);
+                ListFood = ListFood.FindAll(x => x.MealsType.Contains(MealsType));
             }
             foreach (Food ObjFood in ListFood)
             {
@@ -315,9 +315,11 @@ namespace FOODDO.Models
         }
 
         // Post Order
-        public string PostOrder(string CID,string CSVMessId ,string Type,int HubId)
+        public PostOrderResult PostOrder(string CID,string CSVMessId)
         {
-            
+            PostOrderResult ReturnResult = new PostOrderResult();
+            ReturnResult.Status = 0;
+            List<Address> CustomerAddressList= Address.List.FindAll(x => x.CID == System.Int64.Parse(CID));
             System.TimeSpan OpeningTime = new System.TimeSpan(6,0,0);
             System.TimeSpan ClosingTime = new System.TimeSpan(22,0,0);
             Settings OrderOpeningTimeObj = Settings.List.Find(x => x.KeyName == "OrderOpeningTime");
@@ -332,18 +334,22 @@ namespace FOODDO.Models
                 string[] ArrayClosingTime = OrderClosingTimeObj.KeyValue.Split(',');
                 ClosingTime = new System.TimeSpan(int.Parse(ArrayClosingTime[0]), int.Parse(ArrayClosingTime[1]), int.Parse(ArrayClosingTime[2]));
             }
-
-            if (System.DateTime.Now.Date.Add(OpeningTime)>System.DateTime.Now && System.DateTime.Now.Add(ClosingTime) < System.DateTime.Now) { }
+            System.DateTime OpeningDT = System.DateTime.Now.Date.Add(OpeningTime);
+            System.DateTime ClosingDT = System.DateTime.Now.Add(ClosingTime);
+            if (System.DateTime.Now>OpeningDT && ClosingDT> System.DateTime.Now) { }
             else
             {
-                return "Cannot Order Between :" + System.DateTime.Now.Date.Add(OpeningTime).ToString("dd/MM/yyyy hh:mm:ss tt") + "To " + System.DateTime.Now.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt");
+                ReturnResult.Msg= "Cannot Order Between :" + System.DateTime.Now.Date.Add(OpeningTime).ToString("dd/MM/yyyy hh:mm:ss tt") + " To " + System.DateTime.Now.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt");
+                return ReturnResult;
             }
             
             System.Int64 CusID = System.Convert.ToInt64(CID);
             List<Cart> ListCart = Cart.List.FindAll(x => x.CID == CusID);
             if (ListCart.Count <= 0)
             {
-                return "Order Not Complete Because No Item Added";
+                ReturnResult.Status = 101;
+                ReturnResult.Msg = "Order Not Complete Because No Item Added";
+                return ReturnResult;
             }
             //check Balance
             double PayableAmt = 0;
@@ -354,55 +360,100 @@ namespace FOODDO.Models
             }
             double Bal = Ledger.List.FindAll(x => x.CID == CusID).Select(y => y.Credit - y.Debit).Sum();
             if (Bal < PayableAmt)
-                return "No Bal";
-
-            Orders ObjOrders = new Orders()
             {
-                Create_By = CusID,
-                Create_Date = System.DateTime.Now,
-                CID = CusID,
-                MessIDs= CSVMessId,
-                Status = "Order-Placed",
-                Type= Type,
-                HubId=HubId
-
-            };
-            System.Int64 NewOID = ObjOrders.Save();
-
-            if (NewOID > 0)
-            {
-                foreach (Cart Obj in ListCart)
-                {
-                    Food ObjFood = Food.List.Find(x => x.FID == Obj.FID);
-                    OrderItem ObjID = new OrderItem()
-                    {
-                        FID = Obj.FID,
-                        Price = ObjFood.Price,
-                        Count = Obj.Count,
-                        Qty = ObjFood.Qty,
-                        OID = NewOID,
-                        MessID= Obj.MessID,
-                        Status=0
-                        
-                    };
-                    ObjID.Save();
-                }
-                Cart.List.RemoveAll(x => x.CID == CusID);
-
-                Ledger ObjLedger = new Ledger()
-                {
-                    CID = CusID,
-                    Debit = PayableAmt,
-                    Description = "Deducted For Order NO :" + NewOID,
-                    LedgerType="CUSTOMER"
-                };
-                if (ObjLedger.Save() == 0)
-                    return "Order Saved But Balance Not Deduct";
-
-                return "" + NewOID;
+                ReturnResult.Status = 102;
+                ReturnResult.Msg = "No Balance In Wallet";
+                return ReturnResult;
             }
-            return "Order Not Complete";
+                
 
+         IEnumerable<IGrouping<string,Cart>> CartItemByMealType  = ListCart.GroupBy(x => x.MealType).ToList();
+            string[] MealTypes = CartItemByMealType.Select(x => x.Key).ToArray();
+
+            // check Address Type For Lunch Dinner and Breakfast
+          foreach(string Key in MealTypes)
+            {
+                Address CustAddress = CustomerAddressList.Find(x=>x.Type == Key);
+                if (CustAddress == null)
+                {
+                    ReturnResult.Status = 103;
+                    ReturnResult.Msg= Key;
+                    return ReturnResult;
+                }
+            }
+            string OrderIds = "";
+            foreach (var MealTypeList in CartItemByMealType)
+            {
+                string MealTypeKey= MealTypeList.Key;
+                Orders ObjOrders = new Orders()
+                {
+                    Create_By = CusID,
+                    Create_Date = System.DateTime.Now,
+                    CID = CusID,
+                    MessIDs = CSVMessId,
+                    Status = "Order-Placed",
+                     Type= MealTypeKey,
+                    HubId=int.Parse(CustomerAddressList.Find(x => x.Type == MealTypeKey).Hub)
+
+                };
+                System.Int64 NewOID = ObjOrders.Save();
+                if (NewOID > 0)
+                {
+                    ReturnResult.Status = 1;
+                    OrderIds += NewOID.ToString();
+                    foreach (Cart Obj in MealTypeList.ToList())
+                    {
+                        Food ObjFood = Food.List.Find(x => x.FID == Obj.FID);
+                        OrderItem ObjID = new OrderItem()
+                        {
+                            FID = Obj.FID,
+                            Price = ObjFood.Price,
+                            Count = Obj.Count,
+                            Qty = ObjFood.Qty,
+                            OID = NewOID,
+                            MessID = Obj.MessID,
+                            Status = 0
+
+                        };
+                       if(ObjID.Save() <= 0)
+                        {
+                            Orders order = new Orders();
+                            order.DeleteOrderAndOrderItem(NewOID);
+                            ReturnResult.Status = 0;
+                            ReturnResult.Msg = "Unable To Place Order-Items at this time";
+                            return ReturnResult;
+                        }
+                    }
+                }
+                else
+                {
+                ReturnResult.Msg = "Unable To Place Order at this time";
+                return ReturnResult;
+                }
+               
+            }
+            var OrderidsArray = Regex.Split(OrderIds,",").Where(x => x != string.Empty).ToArray();
+            OrderIds = string.Join(",", OrderidsArray);
+            ReturnResult.Msg = OrderIds;
+            Cart.List.RemoveAll(x => x.CID == CusID);
+            Ledger ObjLedger = new Ledger()
+            {
+                CID = CusID,
+                Debit = PayableAmt,
+                Description = "Deducted For Order NO :" + OrderIds,
+                LedgerType = "CUSTOMER"
+            };
+            if (ObjLedger.Save() == 0)
+            {
+                foreach(string OID in OrderidsArray)
+                {
+                    Orders order = new Orders();
+                    order.DeleteOrderAndOrderItem(System.Int64.Parse(OID));
+                }
+                ReturnResult.Msg = "Unable To Deduct balance For Order";
+
+            }
+            return ReturnResult;
         }
 
         // Get Orders

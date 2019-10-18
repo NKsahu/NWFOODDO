@@ -13,6 +13,7 @@ namespace FOODDO.Models.COMMON
         public double FromAmount { get; set; }
         public double ToAmount { get; set; }
         public double Bonus { get; set; }
+        public bool DeletedStatus { get; set; }
         public static List<Offers> List = new List<Offers>();
         public System.Int64 Save()
         {
@@ -21,10 +22,10 @@ namespace FOODDO.Models.COMMON
             try
             {
                 if (this.TitileId == 0)
-                    cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO Offer VALUES (@Title,@description,@FromAmount,@ToAmount,@Bonus);select SCOPE_IDENTITY();", Obj.Con);
+                    cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO Offer VALUES (@Title,@description,@FromAmount,@ToAmount,@Bonus,@DeletedStatus);select SCOPE_IDENTITY();", Obj.Con);
                 else
                 {
-                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE Offer SET Title=@Title,description=@description,FromAmount=@FromAmount,ToAmount=@ToAmount,Bonus=@Bonus where OfferID=@OfferID", Obj.Con);
+                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE Offer SET Title=@Title,description=@description,FromAmount=@FromAmount,ToAmount=@ToAmount,Bonus=@Bonus,DeletedStatus=@DeletedStatus where OfferID=@OfferID", Obj.Con);
                     cmd.Parameters.AddWithValue("@OfferID", this.TitileId);
                 }
                 cmd.Parameters.AddWithValue("@Title", this.Title);
@@ -32,7 +33,7 @@ namespace FOODDO.Models.COMMON
                 cmd.Parameters.AddWithValue("@FromAmount", this.FromAmount);
                 cmd.Parameters.AddWithValue("@ToAmount", this.ToAmount);
                 cmd.Parameters.AddWithValue("@Bonus", this.Bonus);
-               
+                cmd.Parameters.AddWithValue("@DeletedStatus", this.DeletedStatus);
                 if (this.TitileId == 0)
                 {
                     this.TitileId = System.Convert.ToInt32(cmd.ExecuteScalar());
@@ -44,6 +45,7 @@ namespace FOODDO.Models.COMMON
                     if (cmd.ExecuteNonQuery() > 0)
                     {
                         Offers.List.RemoveAll(x => x.TitileId == this.TitileId);
+                        if(this.DeletedStatus==false)
                         Offers.List.Insert(0, this);
                     }
                 }
@@ -62,7 +64,7 @@ namespace FOODDO.Models.COMMON
             DBCon Obj = new DBCon();
             try
             {
-                string Query = "SELECT * FROM Offer";
+                string Query = "SELECT * FROM Offer where DeletedStatus IS NULL OR DeletedStatus=0";
                 cmd = new System.Data.SqlClient.SqlCommand(Query, Obj.Con);
                 SDR = cmd.ExecuteReader();
                 while (SDR.Read())

@@ -30,13 +30,13 @@ namespace FOODDO.Models
         IList<App_Search> SearchMessFood(string SearchTerm);
 
         // Add item in Cart
-        string AddCart(string CID, string FID, string Cnt, string MessID);
+        string AddCart(string CID, string FID, string Cnt, string MessID,string MealType);
 
         // Get View Cart
         ViewCartItems GetCart(string CID);
 
         // Post Order
-        string PostOrder(string CID, string CSVMessId, string Type,int HubId);
+        PostOrderResult PostOrder(string CID, string CSVMessId);
 
         // Get Orders
         List<App_GetOrders> GetOrder(string CID);

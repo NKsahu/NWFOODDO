@@ -12,7 +12,7 @@ namespace FOODDO.Controllers
        
         public ActionResult Index()
         {
-            List<Offers> OfferList = Offers.List;
+            List<Offers> OfferList = Offers.List.OrderBy(x=>x.FromAmount).ToList();
             return View(OfferList);
         }
 
@@ -28,7 +28,8 @@ namespace FOODDO.Controllers
         [HttpPost]
         public ActionResult CreatePost(Offers offers)
         {
-            if(offers.Title==null || offers.Title.Replace(" ", "").Equals(""))
+            offers.DeletedStatus = false;
+            if (offers.Title==null || offers.Title.Replace(" ", "").Equals(""))
             {
                 return Json(new {msg="Please Enter Title First"});
             }
@@ -41,6 +42,16 @@ namespace FOODDO.Controllers
                 return Json(new { msg = "Can't Save Offer.. " });
             }
 
+            return RedirectToAction("index");
+        }
+        
+        public ActionResult DeletedOffer(int Id)
+        {
+            Offers offers = Offers.List.Find(x => x.TitileId == Id);
+            if(Session["UID"]==null)
+                return Json(new { msg = "Plese Login First " });
+            offers.DeletedStatus = true;
+            offers.Save();
             return RedirectToAction("index");
         }
 

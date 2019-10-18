@@ -106,5 +106,24 @@ namespace FOODDO.Models
             finally { cmd.Dispose(); SDR.Close(); Obj.Con.Close(); Obj.Con.Dispose(); Obj.Con = null; }
             return (ListTmp);
         }
+        // Delete Order And Its Order Items If  OrderItem Or Balance Not Detucted
+        public int DeleteOrderAndOrderItem(System.Int64 OID)
+        {
+            Orders Order = Orders.List.Find(x => x.OID == OID);
+            if (Order != null)
+            {
+                Order.Deleted = true;
+                Order.Save();
+            }
+          System.Collections.Generic.List<OrderItem> OrderItemList = OrderItem.List.FindAll(x => x.OID == OID);
+            foreach(OrderItem OrderItem in OrderItemList)
+            {
+                OrderItem.Deleted = true;
+                OrderItem.Save();
+            }
+            return 0;
+
+        }
+
     }
 }
