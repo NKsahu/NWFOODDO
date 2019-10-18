@@ -16,6 +16,7 @@
         public string Rating { get; set; }
         public string FoodType { get; set; }
         public string MealsType { get; set; }
+        public string NoteInfo { get; set; }
 
     }
     //public class App_MessItem 

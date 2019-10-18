@@ -130,44 +130,7 @@ namespace FOODDO.Models
             }
             return App_Category;
         }
-
-        //// Get Mess of Food
-        //public IList<App_Mess> GetMessOfFoodAndCategories(string SearchTerm = "", string CID = "",string FoodType="")
-        //{
-
-        //    IList<App_Mess> IAppListMess = new List<App_Mess>();
-        //    List<Food> ListFood = Food.List;
-        //    if (!SearchTerm.Equals(""))
-        //    {
-        //        ListFood = ListFood.FindAll(x => x.Food_Name.ToLower().Contains(SearchTerm.ToLower()));
-        //    }
-        //    else if (!CID.Equals(""))
-        //    {
-        //        ListFood = ListFood.FindAll(x => x.Category_ID.ToString()==CID);
-        //    }
-        //    foreach (Food ObjFood in ListFood)
-        //    {
-        //        Mess ObjMess = Mess.List.Find(x => x.MID == ObjFood.MID);
-        //        App_Mess TmpObj = new App_Mess()
-        //        {
-
-        //            MID = ObjFood.MID.ToString(),
-        //            FID = ObjFood.FID.ToString(),
-        //            MessImage = Host + ObjMess.Image,
-        //            Mess_Name = ObjMess.Mess_Name,
-        //            Item_Name = ObjFood.Food_Name,
-        //            MessAddress = ObjMess.Address,
-        //            MessType = ObjMess.MessType,
-        //            FoodType=ObjFood.FoodType,
-        //            FoodImg = Host + ObjFood.Food_Image
-        //        };
-        //        IAppListMess.Add(TmpObj);
-        //    }
-
-
-        //    return IAppListMess;
-        //}
-
+        
         // Get List Mess Item
         public List<App_MessItemList> GetMessItem(string SearchTerm = "", string CID = "", string FoodType = "",string UID="",string MealsType="")
         {
@@ -194,6 +157,7 @@ namespace FOODDO.Models
             {
                 ListFood = ListFood.FindAll(x => x.MealsType.Contains(MealsType));
             }
+          List<FoodReview> FoodReviewList=  FoodReview.List.FindAll(x => x.CID ==System.Int64.Parse(UID));
             foreach (Food ObjFood in ListFood)
             {
                 Mess ObjMess = Mess.List.Find(x => x.MID == ObjFood.MID);
@@ -220,6 +184,15 @@ namespace FOODDO.Models
                 else
                     TmpObj.Count = "0";
 
+                FoodReview FoodNoteInfoObj = FoodReviewList.Find(x=>x.FID == ObjFood.FID);
+                if (FoodNoteInfoObj != null)
+                {
+                    TmpObj.NoteInfo = FoodNoteInfoObj.Comment;
+                }
+                else
+                {
+                    TmpObj.NoteInfo ="";
+                }
                 ListMessItemList.Add(TmpObj);
             }
             
@@ -788,96 +761,9 @@ namespace FOODDO.Models
         {
             List<OrderItem> OrderItemList = new List<OrderItem>();
                  OrderItemList = OrderItem.List.FindAll(x => x.MessID == MessId && x.FID == FID);
-
-            foreach(OrderItem objOI in OrderItemList)
-            {
-
-            }
-
             return OrderItemList;
         }
-       public CollectOrder  PostCollectionItem(int OIID, int ElementCode)
-        {
-            CollectOrder CollOrdObj = new CollectOrder();
-            CollOrdObj.status = 0;
-            CollOrdObj.msg = "Server Error";
-            int NumberOfRackInOrderItem = 0;
-            int OrderItemID = OIID;
-            int ElementRackID = ElementCode;
-                TifinRackMaster ObjElementRack = TifinRackMaster.List.Values.ToList().Find(x => x.TifinRackId == ElementRackID);
-                OrderItem ObjOrderItem = OrderItem.List.Find(x => x.OIID == OrderItemID);
-                if (ObjOrderItem != null)
-                {
-                    if (ObjElementRack != null && ObjElementRack.TifinRackStatus != ("Used"))
-                    {
-                        int TotalItems = ObjOrderItem.Count;
-
-                        if (ObjOrderItem.TifinRackIds.Contains(","))
-                        {
-                        string[] TifinRackIds = Regex.Split(ObjOrderItem.TifinRackIds, ",").Where(x => x != string.Empty).ToArray();
-                            NumberOfRackInOrderItem = TifinRackIds.Length;
-                        }
-                        if (NumberOfRackInOrderItem > TotalItems)
-                        {
-                        CollOrdObj.status = 0;
-                        CollOrdObj.msg = "Element Racks Cannot More Than Total Item in Order Item. Total Rack Element in Item is going to" + NumberOfRackInOrderItem;
-                        return CollOrdObj;
-                        }
-                    ObjOrderItem.Status = 2;// 2 for approved by foodoo admin
-                    if (ObjOrderItem.TifinRackIds != null && ObjOrderItem.TifinRackIds != "")
-                        {
-                            ObjOrderItem.TifinRackIds = ObjOrderItem.TifinRackIds + ElementRackID.ToString() + ",";
-                        }
-                        else
-                        {
-                            ObjOrderItem.TifinRackIds = ElementRackID.ToString() + ",";
-                        }
-                            ObjOrderItem.UpdatedBy = 0;
-                        ObjOrderItem.UpdationDate = System.DateTime.Now;
-                    if (ObjOrderItem.Save() > 0)
-                    {
-                        CollOrdObj.status = ObjOrderItem.Status;
-                        // split logc here 
-                        string[] TifinRackIdsArray =Regex.Split(ObjOrderItem.TifinRackIds, ",").Where(x => x != string.Empty).ToArray();
-                        CollOrdObj.msg = string.Join(",", TifinRackIdsArray);
-                        //
-                        NumberOfRackInOrderItem += 1;// increament number of rack in as per OID count
-                        ObjElementRack.TifinRackStatus = "Used";
-                        ObjElementRack.Save();
-                        List<OrderItem> TotalOrderItemList = OrderItem.List.FindAll(x => x.OID == ObjOrderItem.OID);
-                        List<OrderItem> TotalOrderCompleted = TotalOrderItemList.FindAll(x => x.Status == 2);
-                        if (TotalOrderCompleted.Count == TotalOrderItemList.Count)
-                        {
-                            Orders ObjOrder = Orders.List.Find(x => x.OID == ObjOrderItem.OID);
-                            if (ObjOrder != null)
-                            {
-                                ObjOrder.Status = "Order-Collected";
-                                if (ObjOrder.Save() <= 0) { }
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        CollOrdObj.status = 0;
-                        CollOrdObj.msg = "Can't collect Item Server is Too Busy";
-                        return CollOrdObj;
-                    }
-                    }
-                    else if (ObjElementRack != null)
-                    {
-                    CollOrdObj.status = 0;
-                    CollOrdObj.msg = "This Element Is Aready Used";
-                    }
-                    else
-                    {
-                    CollOrdObj.status = 0;
-                    CollOrdObj.msg =" Element Not Found Plese Check Element Code";
-                    }
-
-                }
-            return CollOrdObj;
-        }
+      
         public List<QRInfo> CusQrInfo(int CustId)
         {
             List<Routes> HubList = new Routes().RouteList();
@@ -932,6 +818,6 @@ namespace FOODDO.Models
             walletOffersList.Add(CashBackOffer);
             return walletOffersList;
         }
-
+       
     }
 }

@@ -92,12 +92,10 @@ namespace FOODDO.Models
 
         List<Mess> CollectionFilter();
         List<OrderItem> ListOfOredItemCollect(int MessId, int FID);
-
-       CollectOrder PostCollectionItem(int OIID, int ElementCode);
         List<Routes> HubList();
         List<QRInfo> CusQrInfo(int CustId);
         List<WalletOffer> WalletOffers();
-
+       
     }
 
 }
