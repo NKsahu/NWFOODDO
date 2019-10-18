@@ -40,6 +40,7 @@ namespace FOODDO.Models.COMMON
                     if (this.TitileId > 0)
                         Offers.List.Insert(0, this);
                 }
+
                 else
                 {
                     if (cmd.ExecuteNonQuery() > 0)
