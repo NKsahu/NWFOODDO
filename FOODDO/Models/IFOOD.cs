@@ -71,8 +71,8 @@ namespace FOODDO.Models
 
 
         //============= START MESS APP CODE HERE==============////
-        //1) mess user login
-        Mess MessLogin(string UserName, string Password);
+        //1) Common User Login Like D-B ,HubOwner ,Mess user login
+        string CommonLogin(string MobileNo, string Password);
 
         //2) mess order item Description=========
 
@@ -95,7 +95,7 @@ namespace FOODDO.Models
         List<Routes> HubList();
         List<QRInfo> CusQrInfo(int CustId);
         List<WalletOffer> WalletOffers();
-       
+        List<HubWiseTifin> HubWiseTifinList();
     }
 
 }

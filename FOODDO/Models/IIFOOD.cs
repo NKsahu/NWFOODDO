@@ -175,7 +175,7 @@ namespace FOODDO.Models
                 TmpObj.Rating = ObjFood.Rating;
                 TmpObj.FoodType = ObjFood.FoodType;
                 TmpObj.MealsType = MealsType;
-                Cart ObjCart = ListCart.Find(x => x.FID == ObjFood.FID);
+                Cart ObjCart = ListCart.Find(x => x.FID == ObjFood.FID &&x.MealType==MealsType);
                 if (ObjCart != null)
                 {
                     TmpObj.Count = ObjCart.Count.ToString();
@@ -228,11 +228,11 @@ namespace FOODDO.Models
             System.Int64 CusID = System.Convert.ToInt64(CID);
             System.Int64 FoodID = System.Convert.ToInt64(FID);
             System.Int64 Mess_ID = System.Convert.ToInt64(MessID);
-            Cart ObjCart = Cart.List.Find(x => x.CID == CusID && x.FID == FoodID);
+            Cart ObjCart = Cart.List.Find(x => x.CID == CusID && x.FID == FoodID && x.MealType==MealType);
             if (ObjCart != null)
             {
                 ObjCart.Count = System.Convert.ToInt32(Cnt);
-                Cart.List.RemoveAll(x => x.CID == CusID && x.FID == FoodID);
+                Cart.List.RemoveAll(x => x.CID == CusID && x.FID == FoodID && x.MealType==MealType);
                 if (ObjCart.Count != 0)
                     Cart.List.Add(ObjCart);
             }
@@ -292,7 +292,14 @@ namespace FOODDO.Models
         {
             PostOrderResult ReturnResult = new PostOrderResult();
             ReturnResult.Status = 0;
-            List<Address> CustomerAddressList= Address.List.FindAll(x => x.CID == System.Int64.Parse(CID));
+            System.Int64 CusID = System.Convert.ToInt64(CID);
+            List<Address> CustomerAddressList= Address.List.FindAll(x => x.CID ==CusID);
+            Customer ObjCustomer = Customer.List.Find(x => x.CID == CusID);
+            if (ObjCustomer == null)
+            {
+                ReturnResult.Msg = "Please Login Again Your Id Not Found";
+                return ReturnResult;
+            }
             System.TimeSpan OpeningTime = new System.TimeSpan(6,0,0);
             System.TimeSpan ClosingTime = new System.TimeSpan(22,0,0);
             Settings OrderOpeningTimeObj = Settings.List.Find(x => x.KeyName == "OrderOpeningTime");
@@ -308,15 +315,15 @@ namespace FOODDO.Models
                 ClosingTime = new System.TimeSpan(int.Parse(ArrayClosingTime[0]), int.Parse(ArrayClosingTime[1]), int.Parse(ArrayClosingTime[2]));
             }
             System.DateTime OpeningDT = System.DateTime.Now.Date.Add(OpeningTime);
-            System.DateTime ClosingDT = System.DateTime.Now.Add(ClosingTime);
+            System.DateTime ClosingDT =System.DateTime.Parse(System.DateTime.Now.Date.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt"));
             if (System.DateTime.Now>OpeningDT && ClosingDT> System.DateTime.Now) { }
             else
             {
-                ReturnResult.Msg= "Cannot Order Between :" + System.DateTime.Now.Date.Add(OpeningTime).ToString("dd/MM/yyyy hh:mm:ss tt") + " To " + System.DateTime.Now.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt");
+                ReturnResult.Msg = "Cannot Order Before :" + System.DateTime.Now.Date.Add(OpeningTime).ToString("hh:mm tt") + " & After " + System.DateTime.Now.Date.Add(ClosingTime).ToString("hh:mm tt");
                 return ReturnResult;
             }
             
-            System.Int64 CusID = System.Convert.ToInt64(CID);
+           
             List<Cart> ListCart = Cart.List.FindAll(x => x.CID == CusID);
             if (ListCart.Count <= 0)
             {
@@ -373,7 +380,7 @@ namespace FOODDO.Models
                 if (NewOID > 0)
                 {
                     ReturnResult.Status = 1;
-                    OrderIds += NewOID.ToString();
+                    OrderIds += NewOID.ToString()+",";
                     foreach (Cart Obj in MealTypeList.ToList())
                     {
                         Food ObjFood = Food.List.Find(x => x.FID == Obj.FID);
@@ -413,7 +420,7 @@ namespace FOODDO.Models
             {
                 CID = CusID,
                 Debit = PayableAmt,
-                Description = "Deducted For Order NO :" + OrderIds,
+                Description =OrderIds,
                 LedgerType = "CUSTOMER"
             };
             if (ObjLedger.Save() == 0)
@@ -640,23 +647,29 @@ namespace FOODDO.Models
         }
 
 
-        public Mess MessLogin(string UserName, string Password)
+        public string CommonLogin(string MobileNo, string Password)
         {
-            Mess mess = new Mess();
-            Users User = Users.List.Find(x => (x.User_Name == UserName) && (x.Password == Password));
-            if (User != null)
+            string result = "";
+            Mess ObjMess = Mess.List.Find(x => x.Mobile == MobileNo && x.Password == Password);
+            if (ObjMess != null)
             {
-                Mess ObjMess = Mess.List.Find(x => x.MID == User.MESSID);
-                if (ObjMess != null)
-                    return ObjMess;
-                else
-                    return mess;
-                
+                result = "MESS,"+ObjMess.Mess_Name+"," + ObjMess.MID;
+                return result;
             }
-            else
-                return mess;
-          
-          
+            DeliveryBoy ObjDB = DeliveryBoy.List.Find(x => x.Mobile == MobileNo && x.Password == Password);
+            if (ObjDB != null)
+            {
+                result = "DELIVER-BOY," + ObjDB.Name + "," + ObjDB.DBID;
+                return result;
+            }
+
+            Routes ObjHub = new Routes().RouteList().Find(x => x.MobileNo == MobileNo && x.Password == Password);
+            if (ObjHub != null)
+            {
+                result = "HUBOWNER,"+ObjHub.HubName+"," + ObjHub.HubID;
+                return result;
+            }
+            return result;
         }
         // status for filters today,yesterday,completed
         public List<MessOrdersApi> MessOrder(string MessId,string Status)
@@ -817,6 +830,43 @@ namespace FOODDO.Models
             CashBackOffer.CashBackList = cashbackList.OrderBy(X=>X.FromAmt).ToList();
             walletOffersList.Add(CashBackOffer);
             return walletOffersList;
+        }
+
+        public List<HubWiseTifin> HubWiseTifinList()
+        {
+            List<Routes> HubList = new Routes().RouteList();
+            List<HubWiseTifin> hubwiselist = new List<HubWiseTifin>();
+            List<Orders> YesterDayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == System.DateTime.Now.AddDays(-1).Date).ToList();
+          IEnumerable<IGrouping<int, Orders>> OrdersGroupByHub = YesterDayOrderList.GroupBy(x => x.HubId);
+            foreach(var OrderList in OrdersGroupByHub)
+            {
+                List<HubWiseTifin.HubTifins> tifins = new List<HubWiseTifin.HubTifins>();
+                int TotalTifin = 0;
+                foreach ( Orders order in OrderList.ToList())
+                {
+                    HubWiseTifin.HubTifins hubTifins = new HubWiseTifin.HubTifins();
+                    hubTifins.OID = order.OID;
+                    var TifinsArray = Regex.Split(order.TifinIds, ",").Where(x => x != string.Empty).ToArray();
+                    hubTifins.TifinNo = string.Join(",", TifinsArray);
+                    TotalTifin += TifinsArray.Length;
+                    tifins.Add(hubTifins);
+                }
+                Routes ObjHub = HubList.Find(x => x.HubID == OrderList.Key);
+                if (ObjHub != null)
+                {
+                    HubWiseTifin hubWiseTifin = new HubWiseTifin();
+
+                    hubWiseTifin.HubId = ObjHub.HubID;
+                    hubWiseTifin.HubCode = ObjHub.HubCode;
+                    hubWiseTifin.HubName = ObjHub.HubName;
+                    hubWiseTifin.MobileNo = ObjHub.MobileNo;
+                    hubWiseTifin.TifinCounts = TotalTifin;
+                    hubWiseTifin.TifinList = tifins;
+                    hubwiselist.Add(hubWiseTifin);
+                }
+            }
+            hubwiselist = hubwiselist.OrderBy(x => x.HubCode).ToList();
+            return hubwiselist;
         }
        
     }

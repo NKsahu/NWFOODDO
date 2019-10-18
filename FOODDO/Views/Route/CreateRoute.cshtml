@@ -13,37 +13,41 @@
                 @using (Ajax.BeginForm("CreateRoutePost", "Route", new { UID = Model.HubID }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "DynamicData", LoadingElementId = "waiting", OnBegin = "CreateUser" }, new { enctype = "multipart/form-data" }))
                 {
 
-                    <div class="row">
-                        @Html.HiddenFor(model => model.HubID, new { htmlAttributes = new { @class = "", } })
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.HubName, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.HubName, new { htmlAttributes = new { @class = "form-control GPlace", required = "required" } })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.HubCode, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.HubCode, new { htmlAttributes = new { @class = "form-control autodouble", required = "required" } })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.HubOwnerName, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.HubOwnerName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control OnlyNum" } })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.Mobile2, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.Mobile2, new { htmlAttributes = new { @class = "form-control OnlyNum" } })
-                        </div>
-                        @Html.HiddenFor(model => model.HubLatLng, new { htmlAttributes = new { @class = "",value="0" } })
-
-                        <div class="col-md-2">
-                            @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
-
-                            <button type="submit" style="margin-top:10px" class="btn btn-secondary">Save</button>
-                        </div>
-
+                <div class="row">
+                    @Html.HiddenFor(model => model.HubID, new { htmlAttributes = new { @class = "", } })
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.HubName, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.HubName, new { htmlAttributes = new { @class = "form-control GPlace", required = "required" } })
                     </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.HubCode, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.HubCode, new { htmlAttributes = new { @class = "form-control autodouble", required = "required" } })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.HubOwnerName, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.HubOwnerName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control OnlyNum", required = "required" } })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control ",required= "required" } })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Mobile2, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.Mobile2, new { htmlAttributes = new { @class = "form-control OnlyNum" } })
+                    </div>
+                    @Html.HiddenFor(model => model.HubLatLng, new { htmlAttributes = new { @class = "", value = "0" } })
+
+                    <div class="col-md-2">
+                        @Html.Label("User Type", htmlAttributes: new { @class = "control-label text-white " })
+
+                        <button type="submit" style="margin-top:10px" class="btn btn-secondary">Save</button>
+                    </div>
+
+                </div>
 
                 }
             </div>

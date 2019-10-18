@@ -9,12 +9,12 @@ namespace FOODDO.Models
     {
         public int HubID { get; set; }
         public string HubName { get; set; }
-        public string HubCode { get; set; }
+        public double HubCode { get; set; }
         public string HubLatLng { get; set; }
         public string HubOwnerName { get; set; }
         public string MobileNo { get; set; }
         public string Mobile2 { get; set; }
-
+        public string Password { get; set; }
         public List<Routes> RouteList()
         {
             
@@ -34,11 +34,12 @@ namespace FOODDO.Models
                     {
                         HubID = SDR.GetInt32(0),
                         HubName = SDR.GetString(1),
-                        HubCode = SDR.GetString(2),
+                        HubCode = SDR.GetDouble(2),
                         HubLatLng=SDR.IsDBNull(3)?"":SDR.GetString(3),
                         HubOwnerName= SDR.IsDBNull(4) ? "": SDR.GetString(4),
                         MobileNo= SDR.IsDBNull(5) ? "":SDR.GetString(5),
-                        Mobile2= SDR.IsDBNull(6) ? "":SDR.GetString(6)
+                        Mobile2= SDR.IsDBNull(6) ? "":SDR.GetString(6),
+                        Password=SDR.IsDBNull(7)?"":SDR.GetString(7)
                     };
                     ListTmp.Add(ObjRoutes);
                 }
@@ -59,7 +60,7 @@ namespace FOODDO.Models
             int RE = 0;
             try
             {
-                cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO Dl_Route (RouteName,RouteCode,RouteLatLon,HubOwnerName,Mobile,Mobile2) VALUES (@RouteName,@RouteCode,@RouteLatLon,@HubOwnerName,@Mobile,@Mobile2);", Obj.Con);
+                cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO Dl_Route (RouteName,RouteCode,RouteLatLon,HubOwnerName,Mobile,Mobile2,Password) VALUES (@RouteName,@RouteCode,@RouteLatLon,@HubOwnerName,@Mobile,@Mobile2,@Password);", Obj.Con);
                 //cmd.Parameters.AddWithValue("@RID", this.RouteID);
                 cmd.Parameters.AddWithValue("@RouteName", this.HubName);
                 cmd.Parameters.AddWithValue("@RouteCode", this.HubCode);
@@ -90,7 +91,7 @@ namespace FOODDO.Models
                 {
                     cmd.Parameters.AddWithValue("@Mobile2", this.Mobile2);
                 }
-                
+                cmd.Parameters.AddWithValue("@Password", this.Password);
                 RE = cmd.ExecuteNonQuery();
                
             }
@@ -106,7 +107,7 @@ namespace FOODDO.Models
             int RE = 0;
             try
             {
-                cmd = new System.Data.SqlClient.SqlCommand("UPDATE Dl_Route SET RouteName=@RouteName,RouteCode=@RouteCode,RouteLatLon=@RouteLatLon,HubOwnerName=@HubOwnerName,Mobile=@Mobile,Mobile2=@Mobile2 where RID=@RID ", Obj.Con);
+                cmd = new System.Data.SqlClient.SqlCommand("UPDATE Dl_Route SET RouteName=@RouteName,RouteCode=@RouteCode,RouteLatLon=@RouteLatLon,HubOwnerName=@HubOwnerName,Mobile=@Mobile,Mobile2=@Mobile2,Password=@Password where RID=@RID ", Obj.Con);
                 cmd.Parameters.AddWithValue("@RID", this.HubID);
                 cmd.Parameters.AddWithValue("@RouteName", this.HubName);
                 cmd.Parameters.AddWithValue("@RouteCode", this.HubCode);
@@ -137,10 +138,9 @@ namespace FOODDO.Models
                 {
                     cmd.Parameters.AddWithValue("@Mobile2", this.Mobile2);
                 }
-                if (cmd.ExecuteNonQuery() > 0) {
-                    RE = cmd.ExecuteNonQuery();
-                }
-
+                cmd.Parameters.AddWithValue("@Password", this.Password);
+                RE = cmd.ExecuteNonQuery();
+               
             }
             catch (System.Exception e) { RE = 0; e.ToString(); }
             finally { cmd.Dispose(); Obj.Con.Close(); Obj.Con.Dispose(); Obj.Con = null; }

@@ -20,10 +20,11 @@
                                 <th>@Html.DisplayNameFor(model => model.Mess_Name)</th>
                                 <th>@Html.DisplayNameFor(model => model.Address)</th>
                                 <th>@Html.DisplayNameFor(model => model.Mobile)</th>
-                                <th>@Html.DisplayNameFor(model=>model.Mobile2)</th>
+                                <th>@Html.DisplayNameFor(model => model.Password)</th>
+                                <th>@Html.DisplayNameFor(model => model.Mobile2)</th>
                                 <th>@Html.DisplayNameFor(model => model.Owner_Name)</th>
-                                <th>@Html.DisplayNameFor(model=>model.NumberOfTifin)</th>
-                                <th>@Html.DisplayNameFor(model=>model.Create_Date)</th>
+                                <th>@Html.DisplayNameFor(model => model.NumberOfTifin)</th>
+                                <th>@Html.DisplayNameFor(model => model.Create_Date)</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -32,8 +33,8 @@
                             {
                             <tr>
                                 <td>
-                                    @{item.Image = item.Image + "?T" + DateTime.Now;}
-                                    <img src="@item.Image" width="60" height="60" />
+                                   
+                                    <img src="@item.Image?T"@DateTime.Now width="60" height="60" />
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Mess_Name)
@@ -45,6 +46,9 @@
                                     @Html.DisplayFor(modelItem => item.Mobile)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Password)
+                                </td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Mobile2)
                                 </td>
                                 <td>
@@ -54,7 +58,7 @@
                                     @Html.DisplayFor(modelItem => item.NumberOfTifin)
                                 </td>
                                 <td>
-                                   @item.Create_Date.ToString("dd-MM-yyyy")
+                                    @item.Create_Date.ToString("dd-MM-yyyy")
                                 </td>
                                 <td class="text-center">
                                     <a href="/Mess/Create?MID=@item.MID" class="btn btn-warning btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-edit"></i></a>

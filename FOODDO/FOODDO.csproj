@@ -184,6 +184,7 @@
     <Compile Include="Models\Food.cs" />
     <Compile Include="Models\FoodDoApi.cs" />
     <Compile Include="Models\FooddoModels\CollectOrder.cs" />
+    <Compile Include="Models\FooddoModels\HubWiseTifin.cs" />
     <Compile Include="Models\FooddoModels\PostOrderResult.cs" />
     <Compile Include="Models\FooddoModels\QRInfo.cs" />
     <Compile Include="Models\FooddoModels\WalletOffer.cs" />
