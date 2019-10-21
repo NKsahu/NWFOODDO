@@ -17,19 +17,33 @@
                         <th>
                             Tifin BarCode
                         </th>
+                        <th>
+                            Tifin BarCode
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                   
+                    @for (int i = 0; i < Model.ToList().Count; i++)
                     {
                         <tr>
                             <td>
                                 @{
-                                    var barcode = new NetBarcode.Barcode(item.TifinID.ToString(), true);
+                                    string TifinIds = Model.ToList()[i].TifinID.ToString();
+                                    var barcode = new NetBarcode.Barcode(TifinIds, true);
+                                    i++;
                                 }
-                                <img src="@barcode.GetBase64Image()" />
+                                <img src="@barcode.GetBase64Image()" style="width:50%" height="75%" />
                             </td>
-                            
+                            <td>
+                                @{
+                                    string TifinId2 = Model.ToList()[i].TifinID.ToString();
+                                    var barcode2 = new NetBarcode.Barcode(TifinId2, true);
+                                   
+                                }
+                                <img src="@barcode2.GetBase64Image()" style="width:50%" height="75%" />
+                            </td>
+
                         </tr>
                     }
                 </tbody>
@@ -96,7 +110,7 @@
 
                                     //barcode.SaveImageFile("./CodeImage", ImageFormat.Png);
                                 }
-                                <img src="@barcode.GetBase64Image()" />
+                                <img src="@barcode.GetBase64Image()"  >
                             </td>
                             <td>
                                 @Html.DisplayFor(modelitem=>item.TifinAtLocation)

@@ -178,6 +178,7 @@
     <Compile Include="Models\COMMON\Offers.cs" />
     <Compile Include="Models\COMMON\Select2PagedResult.cs" />
     <Compile Include="Models\COMMON\Select2Result.cs" />
+    <Compile Include="Models\COMMON\Upload.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\DBCon.cs" />
     <Compile Include="Models\DeliveryBoy.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FOODDO.Models.FooddoModels;
+using Newtonsoft.Json.Linq;
 namespace FOODDO.Models
 {
     public interface IFOOD
@@ -96,6 +97,7 @@ namespace FOODDO.Models
         List<QRInfo> CusQrInfo(int CustId);
         List<WalletOffer> WalletOffers();
         List<HubWiseTifin> HubWiseTifinList();
+        int CreateMessFood(JObject food, byte[] imgbytes);
     }
 
 }

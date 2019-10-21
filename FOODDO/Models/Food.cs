@@ -19,7 +19,7 @@ namespace FOODDO.Models
         public System.DateTime Update_Date { get; set; }
         public bool Deleted { get; set; }
         public string FoodType { get; set; }
-        public int AdminAprovalStatus { get; set; }// when food is created by mess ids
+        public int AdminAprovalStatus { get; set; }// when food is created by mess ids{"0 :"UnApproved","1":"Approved By admin"}
         public string MealsType { get; set; }
         public string[] MealTypeMultiSelect { get; set; }
         public static System.Collections.Generic.List<Food> List { get; set; }

@@ -10,17 +10,14 @@ public partial class fileup : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         string vTitle = "";
-        string vDesc = "";
+      
         string FilePath = Server.MapPath("/UsersImg");
 
         if (!string.IsNullOrEmpty(Request.Form["title"]))
         {
             vTitle = Request.Form["title"];
         }
-        if (!string.IsNullOrEmpty(Request.Form["description"]))
-        {
-            vDesc = Request.Form["description"];
-        }
+        
 
         HttpFileCollection MyFileCollection = Request.Files;
         if (MyFileCollection.Count > 0)

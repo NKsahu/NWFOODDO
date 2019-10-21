@@ -45,8 +45,8 @@ namespace NetBarcode
         private string _encodedData;
         private readonly Color _foregroundColor = Color.Black;
         private readonly Color _backgroundColor = Color.White;
-        private int _width = 300;
-        private int _height = 150;
+        private int _width = 1000;
+        private int _height = 500;
         private readonly bool _autoSize = true;
         private readonly bool _showLabel = false;
         private readonly Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);

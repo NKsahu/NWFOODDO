@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using FOODDO.Models.FooddoModels;
+using Newtonsoft.Json.Linq;
 using FOODDO.Models.COMMON;
 namespace FOODDO.Models
 {
-    public class IIFOOD
+    public class IIFOOD 
     {
         public IIFOOD() { }
 
@@ -836,7 +837,7 @@ namespace FOODDO.Models
         {
             List<Routes> HubList = new Routes().RouteList();
             List<HubWiseTifin> hubwiselist = new List<HubWiseTifin>();
-            List<Orders> YesterDayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == System.DateTime.Now.AddDays(-1).Date).ToList();
+            List<Orders> YesterDayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == System.DateTime.Now.Date).ToList();
           IEnumerable<IGrouping<int, Orders>> OrdersGroupByHub = YesterDayOrderList.GroupBy(x => x.HubId);
             foreach(var OrderList in OrdersGroupByHub)
             {
@@ -855,7 +856,6 @@ namespace FOODDO.Models
                 if (ObjHub != null)
                 {
                     HubWiseTifin hubWiseTifin = new HubWiseTifin();
-
                     hubWiseTifin.HubId = ObjHub.HubID;
                     hubWiseTifin.HubCode = ObjHub.HubCode;
                     hubWiseTifin.HubName = ObjHub.HubName;
@@ -867,6 +867,24 @@ namespace FOODDO.Models
             }
             hubwiselist = hubwiselist.OrderBy(x => x.HubCode).ToList();
             return hubwiselist;
+        }
+
+        public int CreateMessFood(JObject food,byte [] imgbytes)
+        {
+            string Sfood = Newtonsoft.Json.JsonConvert.SerializeObject(food);
+            Food foodObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Food>(Sfood);
+            Food FoodExist = Food.List.Find(x => x.Food_Name.ToUpper().Equals(foodObj.Food_Name.ToUpper()) && x.MID == x.MID);
+            if (FoodExist != null) return 100;// food name already exist
+            if (foodObj.Save() > 0)
+            {
+                if (Upload.UpladImage(imgbytes, foodObj.FID.ToString()) == false) return 102; // error in uplad img try again
+            }
+            else
+            {
+                return 101;// error in save food
+            }
+           
+            return (int)foodObj.FID;
         }
        
     }

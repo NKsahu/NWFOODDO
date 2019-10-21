@@ -269,7 +269,7 @@
                                 <tr @(TrbackGorundColor)>
                                     @{
                                         string HubName = " ";
-                                        string hubCode = "";
+                                        double hubCode = 0;
                                         Routes Objhub = HubList.Find(x => x.HubID == item.HubId);
                                         if (Objhub != null)
                                         {
@@ -281,7 +281,7 @@
                                     <td>
                                         @HubName
                                     </td>
-                                    <td>@hubCode</td>
+                                    <td>@hubCode.ToString()</td>
                                     <td>@item.Create_Date.ToString("dd-MM-yyyy")</td>
                                     <td>
                                         @{ Customer ObjCus = Customer.List.Find(x => x.CID == item.CID);}

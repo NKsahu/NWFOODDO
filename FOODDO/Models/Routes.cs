@@ -34,7 +34,7 @@ namespace FOODDO.Models
                     {
                         HubID = SDR.GetInt32(0),
                         HubName = SDR.GetString(1),
-                        HubCode = SDR.GetDouble(2),
+                        HubCode =double.Parse(SDR.GetString(2)),
                         HubLatLng=SDR.IsDBNull(3)?"":SDR.GetString(3),
                         HubOwnerName= SDR.IsDBNull(4) ? "": SDR.GetString(4),
                         MobileNo= SDR.IsDBNull(5) ? "":SDR.GetString(5),
