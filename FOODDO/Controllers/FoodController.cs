@@ -51,6 +51,8 @@ namespace FOODDO.Controllers
             {
                 return Json(new { msg = "Please Select Meal Type" });
             }
+            if (ObjFood.Price <= 0)
+                return Json(new { msg = "Please Select Selling Price" });
             ObjFood.MealsType = string.Join(",", ObjFood.MealTypeMultiSelect);
             ObjFood.MealTypeMultiSelect = null;
             if (ObjFood.Save() < 1)

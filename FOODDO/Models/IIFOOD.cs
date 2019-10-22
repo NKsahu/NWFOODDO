@@ -869,22 +869,34 @@ namespace FOODDO.Models
             return hubwiselist;
         }
 
-        public int CreateMessFood(JObject food,byte [] imgbytes)
+        public System.Int64 CreateMessFood(JObject food,string imgbytes)
         {
             string Sfood = Newtonsoft.Json.JsonConvert.SerializeObject(food);
             Food foodObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Food>(Sfood);
-            Food FoodExist = Food.List.Find(x => x.Food_Name.ToUpper().Equals(foodObj.Food_Name.ToUpper()) && x.MID == x.MID);
-            if (FoodExist != null) return 100;// food name already exist
+            Food FoodExist = Food.List.Find(x => x.Food_Name.ToUpper().Equals(foodObj.Food_Name.ToUpper()) && x.MID == foodObj.MID && x.FID!= foodObj.FID);
+            if (FoodExist != null) return 1;// food name already exist
+            Settings ObjSetting = Settings.List.Find(x => x.KeyName.ToUpper().Equals("MARGINPRICE"));
+            foodObj.Price = foodObj.CostPrice + (double.Parse(ObjSetting.KeyValue) / 100) * foodObj.CostPrice;
             if (foodObj.Save() > 0)
             {
-                if (Upload.UpladImage(imgbytes, foodObj.FID.ToString()) == false) return 102; // error in uplad img try again
+                if (imgbytes != null && imgbytes != "")
+                {
+                    foodObj.Food_Image = "/FoodImages/" + foodObj.FID + ".jpg";
+                    foodObj.Save();///UPDATE IMAGE
+                    byte[] bytes = System.Convert.FromBase64String(imgbytes);
+                    if (Upload.SaveImgToPng(bytes, foodObj.FID.ToString()) == false) return 3; // error in uplad img try again
+                }
             }
             else
             {
-                return 101;// error in save food
+                return 2;// error in save food
             }
-           
-            return (int)foodObj.FID;
+            return foodObj.FID;
+        }
+
+        public List<Food> MessFoodList(int MID)
+        {
+            return Food.List.FindAll(x => x.MID == MID);
         }
        
     }

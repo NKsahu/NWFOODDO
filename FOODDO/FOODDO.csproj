@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AjaxForm\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Assets\ApiJs.js" />
     <Content Include="Assets\autonumeric.js" />
     <Content Include="Assets\bootstrap-4.3.1-dist\css\bootstrap-grid.min.css" />
     <Content Include="Assets\bootstrap-4.3.1-dist\css\bootstrap-reboot.min.css" />
