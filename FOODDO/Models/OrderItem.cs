@@ -10,7 +10,7 @@ namespace FOODDO.Models
         public System.Int64 OID { get; set; }
         public bool Deleted { get; set; }
         public System.Int64 MessID { get; set; }
-        public int Status { get; set; }
+        public int Status { get; set; }//{ 0: itemplaceByUser,1-Item ReadybyMess,2:ItemCollecteByAdmin
        public System.Int64 TifinID { get; set; }
         public System.DateTime OrderDate { get; set; }
         public string TifinRackIds { get; set; }

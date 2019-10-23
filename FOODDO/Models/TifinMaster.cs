@@ -14,7 +14,7 @@ namespace FOODDO.Models
         public System.DateTime CreationDate { get; set; }
         public System.Int32 NumberOfTifin { get; set; }
         public string TifinStatus { get; set; }
-        public string TifinAtLocation { get; set; }// MESS ,CENTER,HUBOWNER,CUSTOMER,DELIVERY-BOY
+        public string TifinAtLocation { get; set; }// MESS :1 ,CENTER:2,HUBOWNER:3,CUSTOMER:4,DELIVERY-BOY:5
         public string TifinTakenBy { get; set; }// uid
         public System.DateTime UpdationDate { get; set; }
         public static ConcurrentDictionary<Int64,TifinMaster> List=new ConcurrentDictionary<Int64, TifinMaster>();
@@ -91,7 +91,7 @@ namespace FOODDO.Models
                     ObjTmp.TifinType = SDR.GetInt32(1);
                     ObjTmp.TifinColor = SDR.GetString(2);
                     ObjTmp.TifinStatus = SDR.IsDBNull(4) ? "UnUsed" : SDR.GetString(4);
-                    ObjTmp.TifinAtLocation = SDR.IsDBNull(5) ? "CENTER" : SDR.GetString(5);
+                    ObjTmp.TifinAtLocation = SDR.IsDBNull(5) ? "2" : SDR.GetString(5);
                     ObjTmp.TifinTakenBy = SDR.IsDBNull(6) ? "" : SDR.GetString(6);
                     ObjTmp.UpdationDate = SDR.IsDBNull(7) ? System.DateTime.Now : SDR.GetDateTime(7);
                     ListTmp.TryAdd(ObjTmp.TifinID,ObjTmp);

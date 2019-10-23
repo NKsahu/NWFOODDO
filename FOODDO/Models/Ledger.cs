@@ -9,7 +9,7 @@ namespace FOODDO.Models
         public string Description { get; set; }
         public System.DateTime Entry_Date { get; set; }
         public bool Deleted { get; set; }
-        public string LedgerType { get; set; }// {"1":CUSTOMER,"2":MESS,"3":DELIVERY-BOY,"4"HUBOWNER
+        public string LedgerType { get; set; }// {"1":CUSTOMER,"2":MESS,"3":DELIVERY-BOY,"4"HUBOWNER,:5 CENTER
         public static System.Collections.Generic.List<Ledger> List { get; set; }
 
         public Ledger()

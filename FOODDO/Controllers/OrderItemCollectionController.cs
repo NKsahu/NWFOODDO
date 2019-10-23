@@ -196,7 +196,7 @@ namespace FOODDO.Controllers
                             if (ObjTifin.TifinStatus.Contains("UnUsed")|| ObjTifin.TifinAtLocation!="CENTER")
                             {
                                 ObjTifin.TifinStatus ="Used";
-                                ObjTifin.TifinAtLocation = "CENTER";
+                                ObjTifin.TifinAtLocation = "2";
                                 ObjTifin.TifinTakenBy = Session["UID"].ToString();
                                 ObjTifin.Save();
                             }
@@ -248,14 +248,14 @@ namespace FOODDO.Controllers
                 return Json(new { msg = "Total Tifin Limit Reached For Mess. Limit Is "+ObjMess.NumberOfTifin }, JsonRequestBehavior.AllowGet);
             }
 
-            if (ObjTifin.TifinAtLocation != "CENTER")
+            if (ObjTifin.TifinAtLocation != "2")
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
                 return Json(new { msg = "This Tifin Already Used By " + ObjTifin.TifinAtLocation }, JsonRequestBehavior.AllowGet);
             }
 
             //change tifin status
-            ObjTifin.TifinAtLocation = "MESS";
+            ObjTifin.TifinAtLocation = "1";
             ObjTifin.TifinTakenBy = ObjMess.MID.ToString();
             if (ObjTifin.Save() == 0)
             {
