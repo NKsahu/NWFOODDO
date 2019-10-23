@@ -17,7 +17,7 @@
         {
             orders = orders.FindAll(x => x.Type == Request.QueryString["OrderType"]);
         }
-        int AssemlbeCount = orders.FindAll(x => x.Status == "Order-Assemble").Count;
+        int AssemlbeCount = orders.FindAll(x => x.Status == "3").Count;
         int NotAssemble = orders.Count - AssemlbeCount;
         switch (Request.QueryString["Status"])
         {
@@ -261,7 +261,7 @@
                                     int TotalAssembleItem = ListOredeItems.FindAll(x => x.Status == 2 && x.TifinID > 0).Count;
                                     string TifinNumber = item.TifinIds;
                                     string TrbackGorundColor = "style=background-color:springgreen;";
-                                    if (item.Status != "Order-Assemble")
+                                    if (item.Status != "3")
                                     {
                                         TrbackGorundColor = "style=background-color:darkorange;";
                                     }

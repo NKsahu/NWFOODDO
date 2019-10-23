@@ -54,6 +54,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Speech" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -195,7 +196,6 @@
     <Compile Include="Models\Ledger.cs" />
     <Compile Include="Models\Mess.cs" />
     <Compile Include="Models\MessOrdersApi.cs" />
-    <Compile Include="Models\Mukeshcls.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\OrderItemCollection.cs" />
     <Compile Include="Models\Orders.cs" />
@@ -203,6 +203,7 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\TifinMaster.cs" />
     <Compile Include="Models\TifinRackMaster.cs" />
+    <Compile Include="Models\TifinSubmiteHub.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -279,6 +280,9 @@
     <Folder Include="FoodImages\" />
     <Folder Include="MessImages\" />
     <Folder Include="Views\AccountSection\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

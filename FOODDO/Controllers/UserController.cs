@@ -60,7 +60,7 @@ namespace FOODDO.Controllers
         [HttpPost]
         public ActionResult Post(Users ObjUser)
         {
-            if(Users.List.Find(x => x.User_Name.Equals(ObjUser.User_Name) && ObjUser.UID==0) != null)
+            if (Users.List.Find(x => x.User_Name.Equals(ObjUser.User_Name) && ObjUser.UID==0) != null)
                 return Json(new { msg = ObjUser.User_Name+" User Name Already have" });
             if(ObjUser.User_Type== "MESS-ADMIN" && ObjUser.MESSID==0)
             {

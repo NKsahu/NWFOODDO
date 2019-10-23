@@ -70,7 +70,7 @@ namespace FOODDO.Controllers
                                 Orders ObjOrder = Orders.List.Find(x => x.OID == ObjOrderItem.OID);
                                 if (ObjOrder != null)
                                 {
-                                    ObjOrder.Status = "Order-Collected";
+                                    ObjOrder.Status = "2";
                                     if (ObjOrder.Save() <= 0) { }
                                    
                                 }
@@ -185,7 +185,7 @@ namespace FOODDO.Controllers
                                 Orders ObjOrder = Orders.List.Find(x => x.OID == OrderItemObj.OID);
                                 if (ObjOrder != null)
                                 {
-                                    ObjOrder.Status = "Order-Assemble";
+                                    ObjOrder.Status = "3";
                                     if (ObjOrder.Save() <= 0) {
                                         Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
                                         return Json(new { msg = "Server Busy For Set Status As Assemble" }, JsonRequestBehavior.AllowGet);

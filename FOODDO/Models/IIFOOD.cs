@@ -26,6 +26,7 @@ namespace FOODDO.Models
                     Email = Email,
                     Mobile = Mobile,
                     Password = Password
+                    
                 };
                 System.Int64 CID = ObjCustomer.Save();
                 if (CID < 1)
@@ -372,7 +373,7 @@ namespace FOODDO.Models
                     Create_Date = System.DateTime.Now,
                     CID = CusID,
                     MessIDs = CSVMessId,
-                    Status = "Order-Placed",
+                    Status = "1",
                      Type= MealTypeKey,
                     HubId=int.Parse(CustomerAddressList.Find(x => x.Type == MealTypeKey).Hub)
 
@@ -422,7 +423,7 @@ namespace FOODDO.Models
                 CID = CusID,
                 Debit = PayableAmt,
                 Description =OrderIds,
-                LedgerType = "CUSTOMER"
+                LedgerType = "1"// 1 FOR CUSTOMER TYPE LEDGER;
             };
             if (ObjLedger.Save() == 0)
             {
@@ -897,17 +898,6 @@ namespace FOODDO.Models
         public List<Food> MessFoodList(int MID)
         {
             return Food.List.FindAll(x => x.MID == MID);
-        }
-        public IList<JObject> Listing()
-        {
-            List<JObject> ListJobj = new List<JObject>();
-            foreach(var obj in Mess.List)
-            {
-                JObject Jobj = new JObject();
-                Jobj.Add("MessName",obj.Mess_Name);
-                Jobj.Add(Jobj);
-            }
-            return ListJobj;
         }
        
     }
