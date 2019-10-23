@@ -14,7 +14,7 @@ namespace FOODDO.Models.COMMON
         public double ToAmount { get; set; }
         public double Bonus { get; set; }
         public bool DeletedStatus { get; set; }
-        public static List<Offers> List = new List<Offers>();
+        public static List<Offers> List { get; set; }
         public System.Int64 Save()
         {
             System.Data.SqlClient.SqlCommand cmd = null;
@@ -84,5 +84,6 @@ namespace FOODDO.Models.COMMON
             finally { cmd.Dispose(); SDR.Close(); Obj.Con.Close(); Obj.Con.Dispose(); Obj.Con = null; }
             return (ListTmp);
         }
+        
     }
 }

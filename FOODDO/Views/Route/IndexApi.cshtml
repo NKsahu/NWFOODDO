@@ -1,0 +1,84 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div class="card">
+    <div class="card-header">
+        HUBS
+        <span class="float-right">
+            <span class="float-right">
+                <a href="/Route/CreateRoute?RouteID=0" class="btn btn-success btn-sm" data-ajax="true" data-ajax-update="#DynamicData" data-ajax-mode="replace" data-ajax-loading="#waiting"> <i class="fa fa-plus"></i></a>
+            </span>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table table-bordered table-hover" id="TBLID">
+                <thead>
+                    <tr>
+                        <th>
+                           Hub Name
+                        </th>
+                        <th>
+                           Hub Code
+                        </th>
+                        <th>Owner Name</th>
+                        <th>Mobile</th>
+                        <th>Password</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+
+                    
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    LoadROuteList();
+    function LoadROuteList() {
+        $("#waiting").show();
+        $.ajax({
+            type: 'GET',
+            url: "/Route/RouteList",
+            success: function (data) {
+                var trow = "";
+                //var JsonArray = [];
+               // alert(data);
+               
+               // alert(JsonObject2[1].Value);
+             //   var DATA = '{"Successful":true,"Value":[{"HubID":1,"HubName":"undefined","HubCode":10.0,"HubLatLng":"","HubOwnerName":"test","MobileNo":"555 ","Mobile2":"","Password":"55555"},{"HubID":2,"HubName":"trest","HubCode":455.0,"HubLatLng":"","HubOwnerName":"rewtwert","MobileNo":"5489632581 ","Mobile2":"","Password":""}]}';
+                //var JsonArray2 = JsonObject2[1].Value;
+                //JsonArray = JSON.parse(JsonArray2);
+                var table = $('#TBLID').DataTable();
+
+               
+                var JsonObject2 = JSON.parse(data);
+                var JsonArray = JsonObject2.Value;
+                for (i = 0; i < JsonArray.length; i++) {
+                  //  alert(JsonArray[i].HubName);
+                 //   trow += "<tr>";
+                 //   trow += "<td>" + JsonArray[i].HubName + "</td>";
+                   // trow += "<td>" + JsonArray[i].HubCode + "</td>";
+                   // trow += "<td>" + JsonArray[i].HubOwnerName + "</td>";
+                   // trow += "<td>" + JsonArray[i].MobileNo + "</td>";
+                  //  trow += "<td>" + JsonArray[i].Password + "</td></tr>";
+                    table.row.add([JsonArray[i].HubName, JsonArray[i].HubCode, JsonArray[i].HubOwnerName, JsonArray[i].MobileNo, JsonArray[i].Password])
+                        .draw();//.//node();
+                }
+               // $("tbody").append(trow);
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                JObj = JSON.parse(jqXhr.responseText);
+                Onfail(JObj.msg);
+            }
+        });
+    }
+    
+</script>

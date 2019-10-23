@@ -100,7 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AjaxForm\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Assets\ApiJs.js" />
     <Content Include="Assets\autonumeric.js" />
     <Content Include="Assets\bootstrap-4.3.1-dist\css\bootstrap-grid.min.css" />
     <Content Include="Assets\bootstrap-4.3.1-dist\css\bootstrap-reboot.min.css" />
@@ -267,6 +266,7 @@
     <Content Include="Views\OrderItemCollection\AlloteTifin.cshtml" />
     <Content Include="Views\Offer\Index.cshtml" />
     <Content Include="Views\Offer\Create.cshtml" />
+    <Content Include="Views\Route\IndexApi.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

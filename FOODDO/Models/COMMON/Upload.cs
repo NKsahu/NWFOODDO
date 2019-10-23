@@ -23,6 +23,7 @@ namespace FOODDO.Models.COMMON
             }
             catch (Exception ex)
             {
+              string msg=  ex.Message;
                 // return the error message if the operation fails
                 return false;
             }

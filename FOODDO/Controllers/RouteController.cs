@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using FOODDO.Models;
 
 namespace FOODDO.Controllers
@@ -45,6 +47,19 @@ namespace FOODDO.Controllers
         public ActionResult LiveSearch()
         {
             return View();
+        }
+        public ActionResult IndexApi()
+        {
+
+            return View();
+        }
+        [HttpGet]
+       public JObject  RouteList()
+        {
+            FoodDoApi.FoodDoApi api = new FoodDoApi.FoodDoApi();
+            var Json= api.HubList();
+            
+            return  Json;
         }
         
     }

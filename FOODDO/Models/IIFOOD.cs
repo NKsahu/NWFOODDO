@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using FOODDO.Models.COMMON;
 namespace FOODDO.Models
 {
-    public class IIFOOD 
+    public class IIFOOD
     {
         public IIFOOD() { }
 
@@ -897,6 +897,17 @@ namespace FOODDO.Models
         public List<Food> MessFoodList(int MID)
         {
             return Food.List.FindAll(x => x.MID == MID);
+        }
+        public IList<JObject> Listing()
+        {
+            List<JObject> ListJobj = new List<JObject>();
+            foreach(var obj in Mess.List)
+            {
+                JObject Jobj = new JObject();
+                Jobj.Add("MessName",obj.Mess_Name);
+                Jobj.Add(Jobj);
+            }
+            return ListJobj;
         }
        
     }
