@@ -279,6 +279,7 @@
     <Folder Include="CodeImage\" />
     <Folder Include="FoodImages\" />
     <Folder Include="MessImages\" />
+    <Folder Include="TifinInfoImg\" />
     <Folder Include="Views\AccountSection\" />
   </ItemGroup>
   <ItemGroup>

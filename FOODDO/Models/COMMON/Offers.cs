@@ -14,6 +14,7 @@ namespace FOODDO.Models.COMMON
         public double ToAmount { get; set; }
         public double Bonus { get; set; }
         public bool DeletedStatus { get; set; }
+        public int DisplayOrder { get; set; }
         public static List<Offers> List { get; set; }
         public System.Int64 Save()
         {

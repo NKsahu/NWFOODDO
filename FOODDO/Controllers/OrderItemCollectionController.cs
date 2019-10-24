@@ -71,8 +71,7 @@ namespace FOODDO.Controllers
                                 if (ObjOrder != null)
                                 {
                                     ObjOrder.Status = "2";
-                                    if (ObjOrder.Save() <= 0) { }
-                                   
+                                    if (ObjOrder.Save() <= 0) { return Json(new { msg = "Server Busy For Set Status As Collected Order" }, JsonRequestBehavior.AllowGet); }
                                 }
                             }
                         }
@@ -86,7 +85,7 @@ namespace FOODDO.Controllers
                     else if (ObjElementRack != null)
                     {
                         Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                        return Json(new { msg = "This Element Is Aready Used" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { msg = "This Element Is Already Used" }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {

@@ -15,6 +15,16 @@ namespace FOODDO.Models
     public string Remarks { get; set; }
     public System.DateTime CreationDate { get; set; }
     public int DeliveryBoyId { get; set; }
+    public int OtpNumber { get; set; }
+
+        public TifinSubmiteHub()
+        {
+            Img = "";
+            PersonName = "";
+            Mobile = "";
+            Remarks = "";
+            CreationDate = System.DateTime.Now;
+        }
         public System.Int64 Save()
         {
             System.Data.SqlClient.SqlCommand cmd = null;
@@ -22,12 +32,12 @@ namespace FOODDO.Models
             try
             {
                 if (this.TifinInfoId == 0) { 
-                cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO TifinSubmitInfo  VALUES (@HubId,@Img,@PersonName,@Mobile,@Remarks,@CreationDate,@DeliveryBoyId);select SCOPE_IDENTITY();", Obj.Con);
+                cmd = new System.Data.SqlClient.SqlCommand("INSERT INTO TifinSubmitInfo  VALUES (@HubId,@Img,@PersonName,@Mobile,@Remarks,@CreationDate,@DeliveryBoyId,@OtpNumber);select SCOPE_IDENTITY();", Obj.Con);
                 cmd.Parameters.AddWithValue("@CreationDate", System.DateTime.Now);
             }
                 else
                 {
-                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE FOOD SET HubId=@HubId,Img=@Img,PersonName=@PersonName,Mobile=@Mobile,Remarks=@Remarks,DeliveryBoyId=@DeliveryBoyId where TifinInfoId=@TifinInfoId", Obj.Con);
+                    cmd = new System.Data.SqlClient.SqlCommand("UPDATE FOOD SET HubId=@HubId,Img=@Img,PersonName=@PersonName,Mobile=@Mobile,Remarks=@Remarks,DeliveryBoyId=@DeliveryBoyId,OtpNumber=@OtpNumber where TifinInfoId=@TifinInfoId", Obj.Con);
                     cmd.Parameters.AddWithValue("@TifinInfoId", this.TifinInfoId);
                 }
                 cmd.Parameters.AddWithValue("@HubId", this.HubId);
@@ -36,6 +46,7 @@ namespace FOODDO.Models
                 cmd.Parameters.AddWithValue("@Mobile", this.Mobile);
                 cmd.Parameters.AddWithValue("@Remarks", this.Remarks);
                 cmd.Parameters.AddWithValue("@DeliveryBoyId", this.DeliveryBoyId);
+                cmd.Parameters.AddWithValue("@OtpNumber", this.OtpNumber);
                 if (this.TifinInfoId == 0)
                 {
                     this.TifinInfoId = System.Convert.ToInt32(cmd.ExecuteScalar());
@@ -54,7 +65,6 @@ namespace FOODDO.Models
         }
         public static List<TifinSubmiteHub> TifinInfoList()
         {
-
             System.Data.SqlClient.SqlCommand cmd = null;
             System.Data.SqlClient.SqlDataReader SDR = null;
             List<TifinSubmiteHub> ListTmp = new List<TifinSubmiteHub>();

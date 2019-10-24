@@ -99,6 +99,7 @@ namespace FOODDO.Models
         List<HubWiseTifin> HubWiseTifinList();
         System.Int64 CreateMessFood(JObject food, string imgbytes);
         List<Food> MessFoodList(int MID);
+        int HubSignUnsignApproval(string obj);
     }
 
 }

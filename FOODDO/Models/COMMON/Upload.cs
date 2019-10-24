@@ -29,14 +29,13 @@ namespace FOODDO.Models.COMMON
             }
 
         }
-        public static bool SaveImgToPng(byte[] imgbytes, string imgname)
+        public static bool SaveImgToPng(byte[] imgbytes,string SavePath)
         {
             try
             {
                 // MemoryStream ms = new MemoryStream(imgbytes);
                 Image img =new Upload().byteArrayToImage(imgbytes);///Image.FromStream(ms);
-                img.Save(HttpContext.Current.Server.MapPath("~/FoodImages/"+imgname+".jpg"));
-              //  System.IO.File.Move("oldfilename", "newfilename");
+                img.Save(HttpContext.Current.Server.MapPath("~"+SavePath));
                 return true;
             }
             catch (Exception ex)

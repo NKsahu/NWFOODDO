@@ -26,7 +26,7 @@ namespace FOODDO.Models
                     Email = Email,
                     Mobile = Mobile,
                     Password = Password
-                    
+
                 };
                 System.Int64 CID = ObjCustomer.Save();
                 if (CID < 1)
@@ -99,7 +99,7 @@ namespace FOODDO.Models
             List<Routes> HubList = new Routes().RouteList();
             foreach (var ObjTmp in ListAddress)
             {
-                Routes ObjRoute = HubList.Find(x => x.HubID ==int.Parse(ObjTmp.Hub));
+                Routes ObjRoute = HubList.Find(x => x.HubID == int.Parse(ObjTmp.Hub));
                 string HubName = ObjRoute != null ? ObjRoute.HubName : "None";
                 App_Address ObjCusAdd = new App_Address()
                 {
@@ -132,17 +132,17 @@ namespace FOODDO.Models
             }
             return App_Category;
         }
-        
+
         // Get List Mess Item
-        public List<App_MessItemList> GetMessItem(string SearchTerm = "", string CID = "", string FoodType = "",string UID="",string MealsType="")
+        public List<App_MessItemList> GetMessItem(string SearchTerm = "", string CID = "", string FoodType = "", string UID = "", string MealsType = "")
         {
             List<App_MessItemList> ListMessItemList = new List<App_MessItemList>();
 
             List<Food> ListFood = Food.List;
 
             List<Cart> ListCart = Cart.List.FindAll(x => x.CID == System.Convert.ToInt64(UID));
-           
-        
+
+
             if (!SearchTerm.Equals(""))
             {
                 ListFood = ListFood.FindAll(x => x.Food_Name.ToLower().Contains(SearchTerm.ToLower()));
@@ -155,11 +155,11 @@ namespace FOODDO.Models
             {
                 ListFood = ListFood.FindAll(x => x.FoodType.Contains(FoodType));
             }
-             if (!MealsType.Equals(""))
+            if (!MealsType.Equals(""))
             {
                 ListFood = ListFood.FindAll(x => x.MealsType.Contains(MealsType));
             }
-          List<FoodReview> FoodReviewList=  FoodReview.List.FindAll(x => x.CID ==System.Int64.Parse(UID));
+            List<FoodReview> FoodReviewList = FoodReview.List.FindAll(x => x.CID == System.Int64.Parse(UID));
             foreach (Food ObjFood in ListFood)
             {
                 Mess ObjMess = Mess.List.Find(x => x.MID == ObjFood.MID);
@@ -177,27 +177,27 @@ namespace FOODDO.Models
                 TmpObj.Rating = ObjFood.Rating;
                 TmpObj.FoodType = ObjFood.FoodType;
                 TmpObj.MealsType = MealsType;
-                Cart ObjCart = ListCart.Find(x => x.FID == ObjFood.FID &&x.MealType==MealsType);
+                Cart ObjCart = ListCart.Find(x => x.FID == ObjFood.FID && x.MealType == MealsType);
                 if (ObjCart != null)
                 {
                     TmpObj.Count = ObjCart.Count.ToString();
-               
+
                 }
                 else
                     TmpObj.Count = "0";
 
-                FoodReview FoodNoteInfoObj = FoodReviewList.Find(x=>x.FID == ObjFood.FID);
+                FoodReview FoodNoteInfoObj = FoodReviewList.Find(x => x.FID == ObjFood.FID);
                 if (FoodNoteInfoObj != null)
                 {
                     TmpObj.NoteInfo = FoodNoteInfoObj.Comment;
                 }
                 else
                 {
-                    TmpObj.NoteInfo ="";
+                    TmpObj.NoteInfo = "";
                 }
                 ListMessItemList.Add(TmpObj);
             }
-            
+
             return ListMessItemList;
         }
 
@@ -225,21 +225,21 @@ namespace FOODDO.Models
         }
 
         // Add item in Cart
-        public string AddCart(string CID, string FID, string Cnt,string MessID,string MealType="")
+        public string AddCart(string CID, string FID, string Cnt, string MessID, string MealType = "")
         {
             System.Int64 CusID = System.Convert.ToInt64(CID);
             System.Int64 FoodID = System.Convert.ToInt64(FID);
             System.Int64 Mess_ID = System.Convert.ToInt64(MessID);
-            Cart ObjCart = Cart.List.Find(x => x.CID == CusID && x.FID == FoodID && x.MealType==MealType);
+            Cart ObjCart = Cart.List.Find(x => x.CID == CusID && x.FID == FoodID && x.MealType == MealType);
             if (ObjCart != null)
             {
                 ObjCart.Count = System.Convert.ToInt32(Cnt);
-                Cart.List.RemoveAll(x => x.CID == CusID && x.FID == FoodID && x.MealType==MealType);
+                Cart.List.RemoveAll(x => x.CID == CusID && x.FID == FoodID && x.MealType == MealType);
                 if (ObjCart.Count != 0)
                     Cart.List.Add(ObjCart);
             }
             else
-                Cart.List.Add(new Cart() { CID = CusID, FID = FoodID, Count = System.Convert.ToInt32(Cnt),MessID=Mess_ID,MealType=MealType });
+                Cart.List.Add(new Cart() { CID = CusID, FID = FoodID, Count = System.Convert.ToInt32(Cnt), MessID = Mess_ID, MealType = MealType });
 
             double Amt = 0;
             int Count = 0;
@@ -281,7 +281,7 @@ namespace FOODDO.Models
                 Objpp_ViewCarts.Count = Obj.Count.ToString();
                 Objpp_ViewCarts.MealsType = Obj.MealType;
                 TotalPrice += Obj.Count * ObjFood.Price;
-                
+
                 ListApp_ViewCarts.Add(Objpp_ViewCarts);
             }
             ObjCartItem.TotalPrice = TotalPrice.ToString();
@@ -290,26 +290,26 @@ namespace FOODDO.Models
         }
 
         // Post Order
-        public PostOrderResult PostOrder(string CID,string CSVMessId)
+        public PostOrderResult PostOrder(string CID, string CSVMessId)
         {
             PostOrderResult ReturnResult = new PostOrderResult();
             ReturnResult.Status = 0;
             System.Int64 CusID = System.Convert.ToInt64(CID);
-            List<Address> CustomerAddressList= Address.List.FindAll(x => x.CID ==CusID);
+            List<Address> CustomerAddressList = Address.List.FindAll(x => x.CID == CusID);
             Customer ObjCustomer = Customer.List.Find(x => x.CID == CusID);
             if (ObjCustomer == null)
             {
                 ReturnResult.Msg = "Please Login Again Your Id Not Found";
                 return ReturnResult;
             }
-            System.TimeSpan OpeningTime = new System.TimeSpan(6,0,0);
-            System.TimeSpan ClosingTime = new System.TimeSpan(22,0,0);
+            System.TimeSpan OpeningTime = new System.TimeSpan(6, 0, 0);
+            System.TimeSpan ClosingTime = new System.TimeSpan(22, 0, 0);
             Settings OrderOpeningTimeObj = Settings.List.Find(x => x.KeyName == "OrderOpeningTime");
             Settings OrderClosingTimeObj = Settings.List.Find(x => x.KeyName == "OrderClosingTime");
             if (OrderOpeningTimeObj != null)
             {
                 string[] ArrayOpeningTime = OrderOpeningTimeObj.KeyValue.Split(',');
-                OpeningTime = new System.TimeSpan(int.Parse(ArrayOpeningTime[0]),int.Parse(ArrayOpeningTime[1]),int.Parse(ArrayOpeningTime[2]));
+                OpeningTime = new System.TimeSpan(int.Parse(ArrayOpeningTime[0]), int.Parse(ArrayOpeningTime[1]), int.Parse(ArrayOpeningTime[2]));
             }
             if (OrderClosingTimeObj != null)
             {
@@ -317,15 +317,15 @@ namespace FOODDO.Models
                 ClosingTime = new System.TimeSpan(int.Parse(ArrayClosingTime[0]), int.Parse(ArrayClosingTime[1]), int.Parse(ArrayClosingTime[2]));
             }
             System.DateTime OpeningDT = System.DateTime.Now.Date.Add(OpeningTime);
-            System.DateTime ClosingDT =System.DateTime.Parse(System.DateTime.Now.Date.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt"));
-            if (System.DateTime.Now>OpeningDT && ClosingDT> System.DateTime.Now) { }
+            System.DateTime ClosingDT = System.DateTime.Parse(System.DateTime.Now.Date.Add(ClosingTime).ToString("dd/MM/yyyy hh:mm:ss tt"));
+            if (System.DateTime.Now > OpeningDT && ClosingDT > System.DateTime.Now) { }
             else
             {
                 ReturnResult.Msg = "Cannot Order Before :" + System.DateTime.Now.Date.Add(OpeningTime).ToString("hh:mm tt") + " & After " + System.DateTime.Now.Date.Add(ClosingTime).ToString("hh:mm tt");
                 return ReturnResult;
             }
-            
-           
+
+
             List<Cart> ListCart = Cart.List.FindAll(x => x.CID == CusID);
             if (ListCart.Count <= 0)
             {
@@ -347,26 +347,26 @@ namespace FOODDO.Models
                 ReturnResult.Msg = "No Balance In Wallet";
                 return ReturnResult;
             }
-                
 
-         IEnumerable<IGrouping<string,Cart>> CartItemByMealType  = ListCart.GroupBy(x => x.MealType).ToList();
+
+            IEnumerable<IGrouping<string, Cart>> CartItemByMealType = ListCart.GroupBy(x => x.MealType).ToList();
             string[] MealTypes = CartItemByMealType.Select(x => x.Key).ToArray();
 
             // check Address Type For Lunch Dinner and Breakfast
-          foreach(string Key in MealTypes)
+            foreach (string Key in MealTypes)
             {
-                Address CustAddress = CustomerAddressList.Find(x=>x.Type == Key);
+                Address CustAddress = CustomerAddressList.Find(x => x.Type == Key);
                 if (CustAddress == null)
                 {
                     ReturnResult.Status = 103;
-                    ReturnResult.Msg= Key;
+                    ReturnResult.Msg = Key;
                     return ReturnResult;
                 }
             }
             string OrderIds = "";
             foreach (var MealTypeList in CartItemByMealType)
             {
-                string MealTypeKey= MealTypeList.Key;
+                string MealTypeKey = MealTypeList.Key;
                 Orders ObjOrders = new Orders()
                 {
                     Create_By = CusID,
@@ -374,15 +374,15 @@ namespace FOODDO.Models
                     CID = CusID,
                     MessIDs = CSVMessId,
                     Status = "1",
-                     Type= MealTypeKey,
-                    HubId=int.Parse(CustomerAddressList.Find(x => x.Type == MealTypeKey).Hub)
+                    Type = MealTypeKey,
+                    HubId = int.Parse(CustomerAddressList.Find(x => x.Type == MealTypeKey).Hub)
 
                 };
                 System.Int64 NewOID = ObjOrders.Save();
                 if (NewOID > 0)
                 {
                     ReturnResult.Status = 1;
-                    OrderIds += NewOID.ToString()+",";
+                    OrderIds += NewOID.ToString() + ",";
                     foreach (Cart Obj in MealTypeList.ToList())
                     {
                         Food ObjFood = Food.List.Find(x => x.FID == Obj.FID);
@@ -397,7 +397,7 @@ namespace FOODDO.Models
                             Status = 0
 
                         };
-                       if(ObjID.Save() <= 0)
+                        if (ObjID.Save() <= 0)
                         {
                             Orders order = new Orders();
                             order.DeleteOrderAndOrderItem(NewOID);
@@ -409,12 +409,12 @@ namespace FOODDO.Models
                 }
                 else
                 {
-                ReturnResult.Msg = "Unable To Place Order at this time";
-                return ReturnResult;
+                    ReturnResult.Msg = "Unable To Place Order at this time";
+                    return ReturnResult;
                 }
-               
+
             }
-            var OrderidsArray = Regex.Split(OrderIds,",").Where(x => x != string.Empty).ToArray();
+            var OrderidsArray = Regex.Split(OrderIds, ",").Where(x => x != string.Empty).ToArray();
             OrderIds = string.Join(",", OrderidsArray);
             ReturnResult.Msg = OrderIds;
             Cart.List.RemoveAll(x => x.CID == CusID);
@@ -422,12 +422,12 @@ namespace FOODDO.Models
             {
                 CID = CusID,
                 Debit = PayableAmt,
-                Description =OrderIds,
+                Description = OrderIds,
                 LedgerType = "1"// 1 FOR CUSTOMER TYPE LEDGER;
             };
             if (ObjLedger.Save() == 0)
             {
-                foreach(string OID in OrderidsArray)
+                foreach (string OID in OrderidsArray)
                 {
                     Orders order = new Orders();
                     order.DeleteOrderAndOrderItem(System.Int64.Parse(OID));
@@ -575,13 +575,13 @@ namespace FOODDO.Models
             int RN5 = FoodReview.List.FindAll(x => x.FID == FOODID && x.Rating == 5).Count();
 
             Food ObjFood = Food.List.Find(x => x.FID == FOODID);
-            double FoodRating= (RN1 + RN2 + RN3 + RN4 + RN5) / 5;
+            double FoodRating = (RN1 + RN2 + RN3 + RN4 + RN5) / 5;
             ObjFood.Rating = FoodRating.ToString("0.00");
             //int RN1_1 = -RN1;
             //int RN2_1 = -2 * (RN2);
             //int RN4_1 = RN4;
             //int RN5_1 = 2 * RN5;
-           /// ObjFood.Rating = (System.Convert.ToDouble((RN1_1 + RN2_1 + RN4_1 + RN5_1) / (RN1 + RN2 + RN3 + RN4 + RN5))).ToString();
+            /// ObjFood.Rating = (System.Convert.ToDouble((RN1_1 + RN2_1 + RN4_1 + RN5_1) / (RN1 + RN2 + RN3 + RN4 + RN5))).ToString();
             if (ObjFood.Save() != 0)
                 return "YES";
             return "ERROR IN RATING";
@@ -589,11 +589,11 @@ namespace FOODDO.Models
         }
 
         // Show Hide Rating if Customer not Eat Food
-       public string ShowHideRating(int Fid, int CustID)
+        public string ShowHideRating(int Fid, int CustID)
         {
             List<Orders> OrderList = Orders.List.FindAll(x => x.CID == CustID && x.Status == "Order-Completed");
-            HashSet<System.Int64> OID = new HashSet<System.Int64>(OrderList.Select(x=>x.OID).ToArray());
-            OrderItem Obj=OrderItem.List.Find(x=>OID.Contains(x.OID) &&x.FID==Fid);
+            HashSet<System.Int64> OID = new HashSet<System.Int64>(OrderList.Select(x => x.OID).ToArray());
+            OrderItem Obj = OrderItem.List.Find(x => OID.Contains(x.OID) && x.FID == Fid);
             if (Obj != null) return "YES";
             else
                 return "NO";
@@ -644,8 +644,8 @@ namespace FOODDO.Models
         {
             DeliveryBoy ObjDBoy = DeliveryBoy.List.Find(x => x.Mobile.Equals(Mobile) && x.Password.Equals(Password));
             if (ObjDBoy != null)
-                return ObjDBoy.DBID + ","+ ObjDBoy.Name;
-                return "NO";
+                return ObjDBoy.DBID + "," + ObjDBoy.Name;
+            return "NO";
         }
 
 
@@ -655,7 +655,7 @@ namespace FOODDO.Models
             Mess ObjMess = Mess.List.Find(x => x.Mobile == MobileNo && x.Password == Password);
             if (ObjMess != null)
             {
-                result = "MESS,"+ObjMess.Mess_Name+"," + ObjMess.MID;
+                result = "MESS," + ObjMess.Mess_Name + "," + ObjMess.MID;
                 return result;
             }
             DeliveryBoy ObjDB = DeliveryBoy.List.Find(x => x.Mobile == MobileNo && x.Password == Password);
@@ -668,24 +668,24 @@ namespace FOODDO.Models
             Routes ObjHub = new Routes().RouteList().Find(x => x.MobileNo == MobileNo && x.Password == Password);
             if (ObjHub != null)
             {
-                result = "HUBOWNER,"+ObjHub.HubName+"," + ObjHub.HubID;
+                result = "HUBOWNER," + ObjHub.HubName + "," + ObjHub.HubID;
                 return result;
             }
             return result;
         }
         // status for filters today,yesterday,completed
-        public List<MessOrdersApi> MessOrder(string MessId,string Status)
+        public List<MessOrdersApi> MessOrder(string MessId, string Status)
         {
             int MyMessId = System.Int32.Parse(MessId);
             List<MessOrdersApi> MessOrderList = new List<MessOrdersApi>();
             List<Food> MyMesssFood = Food.List.FindAll(x => x.MID == MyMessId);
             List<OrderItem> orderItems = OrderItem.List.FindAll(x => x.MessID == MyMessId);
-            List<Orders> OrderList = Orders.List.FindAll(x=>x.MessIDs.Contains(MessId));
+            List<Orders> OrderList = Orders.List.FindAll(x => x.MessIDs.Contains(MessId));
             if (Status == "Today")
             {
-                orderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date && x.Status==0);
+                orderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date && x.Status == 0);
             }
-            else if (Status=="Yesterday")
+            else if (Status == "Yesterday")
             {
                 orderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date.AddDays(-1) && x.Status == 0);
             }
@@ -694,12 +694,12 @@ namespace FOODDO.Models
                 orderItems = orderItems.FindAll(x => x.Status != 0);
             }
 
-                for (int i = 0; i < orderItems.Count; i++)
+            for (int i = 0; i < orderItems.Count; i++)
             {
                 MessOrdersApi messOrdersApi = new MessOrdersApi();
                 Orders MessOrder = OrderList.Find(x => x.OID == orderItems[i].OID);
                 Food MessFood = MyMesssFood.Find(x => x.FID == orderItems[i].FID);
-                if (MessOrder != null&& MessFood!=null)
+                if (MessOrder != null && MessFood != null)
                 {
                     messOrdersApi.FoodName = MessFood.Food_Name;
                     messOrdersApi.FoodImg = MessFood.Food_Image;
@@ -718,18 +718,18 @@ namespace FOODDO.Models
             int MyMessId = System.Int32.Parse(Messid);
             string Result = "0,0,0";// today order yesterday order completed order
             List<OrderItem> orderItems = OrderItem.List.FindAll(x => x.MessID == MyMessId);
-             int   TodayorderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date && x.Status == 0).Count;
-            int  YesterdayorderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date.AddDays(-1) && x.Status == 0).Count;
-            int  CompletedorderItems = orderItems.FindAll(x => x.Status != 0).Count;
-            Result =TodayorderItems.ToString() + "," + YesterdayorderItems.ToString() + "," + CompletedorderItems.ToString();
+            int TodayorderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date && x.Status == 0).Count;
+            int YesterdayorderItems = orderItems.FindAll(x => x.OrderDate.Date == System.DateTime.Now.Date.AddDays(-1) && x.Status == 0).Count;
+            int CompletedorderItems = orderItems.FindAll(x => x.Status != 0).Count;
+            Result = TodayorderItems.ToString() + "," + YesterdayorderItems.ToString() + "," + CompletedorderItems.ToString();
             return Result;
         }
 
 
-      public  string MarkOrderItemPacked(int OrderItemID)
+        public string MarkOrderItemPacked(int OrderItemID)
         {
             string staus = "0";
-            OrderItem orderItem = OrderItem.List.Find(x => x.OIID==OrderItemID);
+            OrderItem orderItem = OrderItem.List.Find(x => x.OIID == OrderItemID);
             if (orderItem != null)
             {
                 orderItem.Status = 1;
@@ -755,14 +755,14 @@ namespace FOODDO.Models
             {
                 return new Users();
             }
-            
+
         }
         public List<Mess> CollectionFilter()
         {
 
             List<Mess> TempMessList = Mess.List;
             List<Food> food_list = Food.List;
-            for(int i = 0; i < TempMessList.Count; i++)
+            for (int i = 0; i < TempMessList.Count; i++)
             {
                 TempMessList[i].FoodList = food_list.FindAll(x => x.MID == TempMessList[i].MID);
 
@@ -772,19 +772,19 @@ namespace FOODDO.Models
 
         }
 
-        public List<OrderItem> ListOfOredItemCollect(int MessId,int FID)
+        public List<OrderItem> ListOfOredItemCollect(int MessId, int FID)
         {
             List<OrderItem> OrderItemList = new List<OrderItem>();
-                 OrderItemList = OrderItem.List.FindAll(x => x.MessID == MessId && x.FID == FID);
+            OrderItemList = OrderItem.List.FindAll(x => x.MessID == MessId && x.FID == FID);
             return OrderItemList;
         }
-      
+
         public List<QRInfo> CusQrInfo(int CustId)
         {
             List<Routes> HubList = new Routes().RouteList();
             List<QRInfo> CusQrInfoTemp = new List<QRInfo>();
             List<Orders> CustOrderList = Orders.List.FindAll(x => x.CID == CustId);
-            for(int i = 0; i < CustOrderList.Count; i++)
+            for (int i = 0; i < CustOrderList.Count; i++)
             {
                 QRInfo TempObj = new QRInfo();
                 TempObj.CustID = CustOrderList[i].CID;
@@ -796,7 +796,7 @@ namespace FOODDO.Models
                 Routes ObjHub = HubList.Find(x => x.HubID == CustOrderList[i].HubId);
                 if (ObjHub != null)
                 {
-                    TempObj.HubName = ObjHub.HubName+"( " + ObjHub.MobileNo.ToString() + " )";
+                    TempObj.HubName = ObjHub.HubName + "( " + ObjHub.MobileNo.ToString() + " )";
                 }
                 CusQrInfoTemp.Add(TempObj);
             }
@@ -812,9 +812,9 @@ namespace FOODDO.Models
             List<WalletOffer.CashBacktemList> cashbackList = new List<WalletOffer.CashBacktemList>();
             foreach (var offerobj in COMMON.Offers.List)
             {
-                if (offerobj.Title.Equals("cashback",System.StringComparison.InvariantCultureIgnoreCase))
+                if (offerobj.Title.Equals("cashback", System.StringComparison.InvariantCultureIgnoreCase))
                 {
-                    WalletOffer.CashBacktemList cashback= new WalletOffer.CashBacktemList();
+                    WalletOffer.CashBacktemList cashback = new WalletOffer.CashBacktemList();
                     cashback.FromAmt = offerobj.FromAmount;
                     cashback.ToAmt = offerobj.ToAmount;
                     cashback.BonusAmt = offerobj.Bonus;
@@ -829,7 +829,7 @@ namespace FOODDO.Models
                     walletOffersList.Add(walletOffer);
                 }
             }
-            CashBackOffer.CashBackList = cashbackList.OrderBy(X=>X.FromAmt).ToList();
+            CashBackOffer.CashBackList = cashbackList.OrderBy(X => X.FromAmt).ToList();
             walletOffersList.Add(CashBackOffer);
             return walletOffersList;
         }
@@ -839,12 +839,12 @@ namespace FOODDO.Models
             List<Routes> HubList = new Routes().RouteList();
             List<HubWiseTifin> hubwiselist = new List<HubWiseTifin>();
             List<Orders> YesterDayOrderList = Orders.List.FindAll(x => x.Create_Date.Date == System.DateTime.Now.Date).ToList();
-          IEnumerable<IGrouping<int, Orders>> OrdersGroupByHub = YesterDayOrderList.GroupBy(x => x.HubId);
-            foreach(var OrderList in OrdersGroupByHub)
+            IEnumerable<IGrouping<int, Orders>> OrdersGroupByHub = YesterDayOrderList.GroupBy(x => x.HubId);
+            foreach (var OrderList in OrdersGroupByHub)
             {
                 List<HubWiseTifin.HubTifins> tifins = new List<HubWiseTifin.HubTifins>();
                 int TotalTifin = 0;
-                foreach ( Orders order in OrderList.ToList())
+                foreach (Orders order in OrderList.ToList())
                 {
                     HubWiseTifin.HubTifins hubTifins = new HubWiseTifin.HubTifins();
                     hubTifins.OID = order.OID;
@@ -870,11 +870,11 @@ namespace FOODDO.Models
             return hubwiselist;
         }
 
-        public System.Int64 CreateMessFood(JObject food,string imgbytes)
+        public System.Int64 CreateMessFood(JObject food, string imgbytes)
         {
             string Sfood = Newtonsoft.Json.JsonConvert.SerializeObject(food);
             Food foodObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Food>(Sfood);
-            Food FoodExist = Food.List.Find(x => x.Food_Name.ToUpper().Equals(foodObj.Food_Name.ToUpper()) && x.MID == foodObj.MID && x.FID!= foodObj.FID);
+            Food FoodExist = Food.List.Find(x => x.Food_Name.ToUpper().Equals(foodObj.Food_Name.ToUpper()) && x.MID == foodObj.MID && x.FID != foodObj.FID);
             if (FoodExist != null) return 1;// food name already exist
             Settings ObjSetting = Settings.List.Find(x => x.KeyName.ToUpper().Equals("MARGINPRICE"));
             foodObj.Price = foodObj.CostPrice + (double.Parse(ObjSetting.KeyValue) / 100) * foodObj.CostPrice;
@@ -885,7 +885,7 @@ namespace FOODDO.Models
                     foodObj.Food_Image = "/FoodImages/" + foodObj.FID + ".jpg";
                     foodObj.Save();///UPDATE IMAGE
                     byte[] bytes = System.Convert.FromBase64String(imgbytes);
-                    if (Upload.SaveImgToPng(bytes, foodObj.FID.ToString()) == false) return 3; // error in uplad img try again
+                    if (Upload.SaveImgToPng(bytes, foodObj.Food_Image) == false) return 3; // error in uplad img try again
                 }
             }
             else
@@ -899,6 +899,34 @@ namespace FOODDO.Models
         {
             return Food.List.FindAll(x => x.MID == MID);
         }
-       
+        public int HubSignUnsignApproval( string obj)
+        {
+            TifinSubmiteHub TifinSubmithub = Newtonsoft.Json.JsonConvert.DeserializeObject<TifinSubmiteHub>(obj);
+            if (TifinSubmithub.OtpNumber <= 0 && (TifinSubmithub.Img!=null|| TifinSubmithub.Img!=""))
+            {
+                byte[] img = System.Convert.FromBase64String(TifinSubmithub.Img);
+                TifinSubmithub.Img = "";
+                if (TifinSubmithub.Save() > 0)
+                {
+                    string path= "/TifinInfoImg/" + TifinSubmithub.TifinInfoId+".jpg";
+                    if (Upload.SaveImgToPng(img, path) == false)
+                    {
+                        return 3; // error in uplad img try again
+                    }
+                }
+                else
+                {
+                    return= 2;
+                }
+            }
+            else
+            {
+                int OtpCode = TifinSubmithub.OtpNumber;
+                // otp verification code here;
+
+            }
+            return 1;
+        }
+
     }
 }
