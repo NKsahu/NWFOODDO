@@ -191,6 +191,7 @@
     <Compile Include="Models\FooddoModels\QRInfo.cs" />
     <Compile Include="Models\FooddoModels\WalletOffer.cs" />
     <Compile Include="Models\FoodReview.cs" />
+    <Compile Include="Models\GenerateOtp.cs" />
     <Compile Include="Models\IFOOD.cs" />
     <Compile Include="Models\IIFOOD.cs" />
     <Compile Include="Models\Ledger.cs" />

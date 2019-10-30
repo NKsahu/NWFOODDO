@@ -916,14 +916,15 @@ namespace FOODDO.Models
                 }
                 else
                 {
-                    return= 2;
+                    int OtpCode = TifinSubmithub.OtpNumber;
+                   
+                    return 2;
                 }
             }
             else
             {
                 int OtpCode = TifinSubmithub.OtpNumber;
                 // otp verification code here;
-
             }
             return 1;
         }

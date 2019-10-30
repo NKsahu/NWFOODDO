@@ -4,7 +4,7 @@ namespace FOODDO.Models
     {
         public System.Int64 OID { get; set; }
         public System.Int64 CID { get; set; }
-        public string Status { get; set; } //Order-Placed:1,Order-Collected:2,Order-Assemble:3,OrderAtHub 4,5:Order-completed,6:Order-TifiCollByDB
+        public string Status { get; set; } //Order-Placed=1,Order-Collected=2,Order-Assemble=3,OrderAtHub=4,Order-completed=5,6:Order-TifiColleByDB
         public System.Int64 Create_By { get; set; }
         public System.DateTime Create_Date { get; set; }
         public System.Int64 Update_By { get; set; }
